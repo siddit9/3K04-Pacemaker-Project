@@ -21,30 +21,35 @@ class loginWindow(object):
             f.write(self.user_entry.get() + ',' + self.password_entry.get() + '\n')
         self.top.destroy()
 
-class loggedInUser(object, User):
+#class loggedInUser(object, User):
 class mainWindow(object):
     def __init__(self, master):
         self.master = master
-        self.img = ImageTk.PhotoImage(Image.open('./logo1.jpg'))
-        self.panel = Label(master, image=self.img)
-        self.panel.pack(padx=10, pady=10)
+        self.frame = Frame(master)
 
-        self.username = Label(master, text='Username').pack(side=LEFT)
-        self.e1 = Entry(master)
-        self.e1.pack(side=LEFT)
-        self.e2 = Entry(master)
-        self.e2.pack(side=RIGHT)
-        self.password = Label(master, text='Password').pack(side=RIGHT)
-        self.w = Button(master, text='Register New', command=self.createNew)
-        self.w.pack(side=BOTTOM)
-        self.w = Button(master, text='Login', command=self.login)
-        self.w.pack(side=BOTTOM)
+        self.frame.pack(expand=True)
+        self.img = ImageTk.PhotoImage(Image.open('./logo1.jpg'))
+        self.panel = Label(self.frame, image=self.img)
+        self.panel.grid(row=0, column=0, padx=10, pady=10)
+        self.username = Label(self.frame, text='Username').grid(row = 1, padx=10)
+        self.e1 = Entry(self.frame)
+        self.e1.grid(row = 2, padx=10)
+
+        self.password = Label(self.frame, text='Password').grid(row = 3, padx=10, pady=(10,0))
+        self.e2 = Entry(self.frame)
+        self.e2.grid(row=4, padx=10)
+
+        self.w = Button(self.frame, text='Register New', command=self.createNew)
+        self.w.grid(row = 5, padx=10, pady=10)
+
+        #self.w = Button(master, text='Login', command=self.login)
+        #self.w.grid(row = 6, padx=10, pady=10)
 
     def createNew(self):
         self.n = loginWindow(self.master)
         self.master.wait_window(self.n.top)
 
-    def login(self):
+    #def login(self):
 
 
 root = Tk()
