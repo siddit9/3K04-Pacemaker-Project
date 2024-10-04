@@ -1,5 +1,6 @@
 from tkinter import *
 import sys
+import csv
 from tkinter import messagebox
 
 from PIL import Image, ImageTk
@@ -61,17 +62,31 @@ class mainWindow(object):
         self.e2 = Entry(self.frame)
         self.e2.grid(row=4, padx=10)
 
-        self.w = Button(self.frame, text='Register New', command=self.createNew)
-        self.w.grid(row = 5, padx=10, pady=10)
+        self.w = Button(self.frame, text='Login', command=lambda: self.login(self.e1.get(),self.e2.get()))
+        self.w.grid(row=5, padx=10, pady=10)
 
-        #self.w = Button(master, text='Login', command=self.login)
-        #self.w.grid(row = 6, padx=10, pady=10)
+        self.w = Button(self.frame, text='Register New', command=self.createNew)
+        self.w.grid(row = 6, padx=10, pady=10)
+
+
 
     def createNew(self):
         self.n = loginWindow(self.master)
         self.master.wait_window(self.n.top)
 
-    #def login(self):
+    def login(self, username, password):
+        with open('users.txt', newline='') as f:
+            reader = csv.reader(f)
+            # Loop through each row in the file
+            for row in reader:
+                if row[0] == username:
+                    if row[1] == password:
+                        t = messagebox.Message(self.master, message="Logged In Succesfully", type=messagebox.OK)
+                        t.show()
+                        return
+            t = messagebox.Message(self.master, message="Wrong Username/Password", type=messagebox.OK)
+            t.show()
+
 
 
 root = Tk()
