@@ -11,15 +11,15 @@ class loginWindow(object):
         self.user_entry = Entry(top)
         self.user_entry.pack()
         self.password = Label(top, text = 'New Password')
-        self.password.pack()
+        self.password.pack(pady=(10,0))
         self.password_entry = Entry(top, show = '*')
         self.password_entry.pack()
         self.b_ok = Button(top, text = 'Ok', command = self.write_new)
-        self.b_ok.pack()
+        self.b_ok.pack(pady=10)
         self.b_cancel = Button(top, text = 'Cancel', command = self.top.destroy)
         self.b_cancel.pack()
 
-    #Window creates new
+    # Window creates new
     def write_new(self):
         with open('users.txt', 'r') as f:
             l = 0
