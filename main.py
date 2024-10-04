@@ -1,5 +1,7 @@
 from tkinter import *
 import sys
+from tkinter import messagebox
+
 from PIL import Image, ImageTk
 class loginWindow(object):
     def __init__(self, master):
@@ -17,9 +19,27 @@ class loginWindow(object):
         self.b_cancel = Button(top, text = 'Cancel', command = self.top.destroy)
         self.b_cancel.pack()
     def write_new(self):
+        with open('users.txt', 'r') as f:
+            l = 0
+            for line in f:
+                l += 1
+            if l >= 10:
+                t = messagebox.Message(self.top, message="Maximum Users Reached", type=messagebox.OK)
+                t.show()
+            else:
+                self.write()
+
+    def write(self):
         with open('users.txt', 'a') as f:
-            f.write(self.user_entry.get() + ',' + self.password_entry.get() + '\n')
-        self.top.destroy()
+            user, passw = self.user_entry.get(), self.password_entry.get()
+            if len(user) > 0 and len(passw) > 0:
+                f.write(user + ',' + passw + '\n')
+                t = messagebox.Message(message="User Created", type=messagebox.OK)
+                t.show()
+                self.top.destroy()
+            else:
+                t = messagebox.Message(self.top, message="User/Password Invalid", type=messagebox.OK)
+                t.show()
 
 #class loggedInUser(object, User):
 class mainWindow(object):
