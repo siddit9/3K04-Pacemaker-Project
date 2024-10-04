@@ -18,6 +18,8 @@ class loginWindow(object):
         self.b_ok.pack()
         self.b_cancel = Button(top, text = 'Cancel', command = self.top.destroy)
         self.b_cancel.pack()
+
+    #Window creates new
     def write_new(self):
         with open('users.txt', 'r') as f:
             l = 0
