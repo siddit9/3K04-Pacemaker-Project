@@ -81,6 +81,13 @@ class loggedinWindow(object):
         self.user_label = ttk.Label(self.id_frame, text="Welcome, " + self.user, font=(25))
         self.user_label.grid(row=2, column=0, padx=5, pady=0, sticky="new")
 
+        self.pacing_mode_label = ttk.Label(self.id_frame, text="Select Pacing Mode:", font=(25))
+        self.pacing_mode_label.grid(row=1, column=2, padx=5, pady=0)
+
+        self.pacing_modes = ttk.Combobox(self.id_frame, values=['AOO','VOO','AAI','VVI'],state='readonly')
+        self.pacing_modes.set('AOO')
+        self.pacing_modes.grid(row=1, column=3, padx=5, pady=0)
+
         self.HR_frame = ttk.LabelFrame(top, text="Heart Rate Control", padding=(20, 30))
         self.HR_frame.grid(row=0, column=0, padx=(20, 10), pady=(80, 20), sticky="nsew")
 
