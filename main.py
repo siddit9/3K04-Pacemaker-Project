@@ -2,7 +2,7 @@ from tkinter import *
 import sys
 from tkinter import messagebox
 from tkinter import ttk
-
+import csv
 from PIL import Image, ImageTk
 
 
@@ -62,7 +62,7 @@ class registerWindow(object):
 
 
 class loggedinWindow(object):
-    def __init__(self, master):
+    def __init__(self, master, user):
         top = self.top = Toplevel(master)
         self.top.geometry("1000x600")
         self.style = ttk.Style(top)
@@ -71,16 +71,15 @@ class loggedinWindow(object):
         self.widgets_frame.grid(row=0, column=1, padx=10, pady=(30, 10), sticky="nsew", rowspan=3)
         self.widgets_frame.columnconfigure(index=0, weight=1)
 
-
-
-
         self.pacemaker_id = "pc_102"
         self.id_frame = ttk.Frame(top, padding=(20, 10))
         self.id_frame.grid(row=0, column=0, padx=(0, 10), pady=(20, 0), sticky="nsew")
         self.ID_label = ttk.Label(self.id_frame, text=self.pacemaker_id, font = (25))
         self.ID_label.grid(row=1, column=0, padx=5, pady=0, sticky="new")
 
-
+        self.user = user
+        self.user_label = ttk.Label(self.id_frame, text="Welcome, " + self.user, font=(25))
+        self.user_label.grid(row=2, column=0, padx=5, pady=0, sticky="new")
 
         self.HR_frame = ttk.LabelFrame(top, text="Heart Rate Control", padding=(20, 30))
         self.HR_frame.grid(row=0, column=0, padx=(20, 10), pady=(80, 20), sticky="nsew")
@@ -106,6 +105,32 @@ class loggedinWindow(object):
         self.default_MSR.set("120")
         self.MSR_spinbox = ttk.Spinbox(self.HR_frame, from_=50, to=175, textvariable=self.default_MSR, increment=5)
         self.MSR_spinbox.grid(row=6, column=0, padx=5, pady=10, sticky="ew")
+
+        self.save_button = ttk.Button(self.HR_frame, text="Save", command=lambda:self.saveData())
+        self.save_button.grid(row=7, column=0, padx=5, pady=10, sticky="ew")
+
+    def saveData(self):
+        # Specify the name to search for and the data to append
+        name_to_find = self.user
+        data_to_append = 'data'
+        filename = 'users.txt'
+
+        # Read the existing data and modify it
+        rows = []
+        with open(filename, mode='r', newline='') as file:
+            reader = csv.reader(file)
+            for row in reader:
+                print(len(row))
+                if len(row) < 3 and row[0] == name_to_find:  # Check if the first item matches the specific name
+                    row.append(data_to_append)  # Append the new value to the row
+                elif len(row) >= 3 and row[0] == name_to_find:
+                    row[2] = data_to_append
+                rows.append(row)
+
+        # Write the updated data back to the CSV file
+        with open(filename, mode='w', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerows(rows)
 
     def exit(self):
         self.top.destroy()
@@ -155,13 +180,16 @@ class mainWindow(object):
         passw = self.e2.get()
         check = 0
         with open('users.txt', 'r') as f:
-            for line in f:
-                username, password = line.split(',')
-                username = username.strip()
-                password = password.strip()
+            reader = csv.reader(f)
+            for row in reader:
+                username = row[0]
+                password = row[1]
+                #username, password = line.split(',')
+                #username = username.strip()
+                #password = password.strip()
                 if username == user and password == passw:
                     print('yay')
-                    self.n = loggedinWindow(self.master)
+                    self.n = loggedinWindow(self.master, user)
                     self.master.wait_window(self.n.top)
                     check = 1
         if check == 0:
