@@ -5,7 +5,6 @@ from tkinter import ttk
 import csv
 from PIL import Image, ImageTk
 
-
 class aboutWindow(object):
     def __init__(self, master):
         top = self.top=Toplevel(master)
@@ -59,7 +58,6 @@ class registerWindow(object):
             else:
                 t = messagebox.Message(self.top, message="User/Password Invalid", type=messagebox.OK)
                 t.show()
-
 
 class loggedinWindow(object):
     def __init__(self, master, user):
@@ -119,7 +117,7 @@ class loggedinWindow(object):
     def saveData(self):
         # Specify the name to search for and the data to append
         name_to_find = self.user
-        data_to_append = ['Pacing Mode','LHR','MSR'] # Replace with values from the input boxes
+        data_to_append = [self.pacing_modes.get(),self.LHR_spinbox.get(),self.UHR_spinbox.get(), self.MSR_spinbox.get()]
         filename = 'users.txt'
 
         # Read the existing data and modify it
@@ -153,6 +151,7 @@ class loggedinWindow(object):
         self.LHR_spinbox.config(increment=self.LHR_inc)
 
         return
+
 class mainWindow(object):
     def __init__(self, master):
         self.master = master
@@ -201,6 +200,7 @@ class mainWindow(object):
         if check == 0:
             t = messagebox.Message(message="Invalid Username or Password", type=messagebox.OK)
             t.show()
+
 class ElectrogramData:
     def __int__(self, AS, AP, AT, TN, VS, VP, PVC, Hy, Sr,
                 UpSmoothing, DownSmoothing, ATRDur, ATRFB,
@@ -220,7 +220,6 @@ class ElectrogramData:
         self.ATRFB = ATRFB
         self.ATREnd = ATREnd
         self.PVP = PVP
-
 
 root = Tk()
 style = ttk.Style(root)

@@ -2,4 +2,4 @@ frf,rww
 oop,poop
 epp,ppy
 talha,1234
-t,t,Pacing Mode,LHR,MSR
+t,t,VOO,62,125,135
