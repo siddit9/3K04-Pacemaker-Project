@@ -119,7 +119,7 @@ class loggedinWindow(object):
     def saveData(self):
         # Specify the name to search for and the data to append
         name_to_find = self.user
-        data_to_append = 'data'
+        data_to_append = ['Pacing Mode','LHR','MSR'] # Replace with values from the input boxes
         filename = 'users.txt'
 
         # Read the existing data and modify it
@@ -127,11 +127,10 @@ class loggedinWindow(object):
         with open(filename, mode='r', newline='') as file:
             reader = csv.reader(file)
             for row in reader:
-                print(len(row))
                 if len(row) < 3 and row[0] == name_to_find:  # Check if the first item matches the specific name
-                    row.append(data_to_append)  # Append the new value to the row
+                    row.extend(data_to_append) # add the data
                 elif len(row) >= 3 and row[0] == name_to_find:
-                    row[2] = data_to_append
+                    row[2:] = data_to_append  # Replace columns 3 onward with new data
                 rows.append(row)
 
         # Write the updated data back to the CSV file
