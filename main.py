@@ -62,7 +62,9 @@ class registerWindow(object):
 
 
 class loggedinWindow(object):
-    def __init__(self, master, user):
+    def __init__(self, master, user, password):
+        self.username = user
+        self.password = password
         top = self.top = Toplevel(master)
         self.top.geometry("1000x600")
         self.style = ttk.Style(top)
@@ -75,14 +77,26 @@ class loggedinWindow(object):
         self.id_frame = ttk.Frame(top, padding=(20, 10))
         self.id_frame.grid(row=0, column=0, padx=(0, 10), pady=(20, 0), sticky="nsew")
         self.ID_label = ttk.Label(self.id_frame, text=self.pacemaker_id, font = (25))
-        self.ID_label.grid(row=1, column=0, padx=5, pady=0, sticky="new")
+        self.ID_label.grid(row=1, column=0, padx=5, pady=10, sticky="new")
+        self.patient_label = ttk.Label(self.id_frame, text="Patient: " + self.username, font = (25))
+        self.patient_label.grid(row=2, column=0, padx=5, pady=0, sticky="new")
+        self.new_patient_button = ttk.Button(self.id_frame, text="New Patient", command = self.top.destroy, style="Accent.TButton")
+        self.new_patient_button.grid(row=2, column=4, padx=20, pady=0, sticky="new")
+        self.save_button = ttk.Button(self.id_frame, text="Save", command=lambda: self.saveData(), style="Accent.TButton")
+        self.save_button.grid(row=1, column=4, padx=20, pady=10, sticky="ew")
 
-        self.user = user
-        self.user_label = ttk.Label(self.id_frame, text="Welcome, " + self.user, font=(25))
-        self.user_label.grid(row=2, column=0, padx=5, pady=0, sticky="new")
+        self.pacing_modes_frame = ttk.Frame(top)
+        self.pacing_modes_frame.grid(row = 0, column = 2)
+        self.pacing_mode_label = ttk.Label(self.pacing_modes_frame, text="Select Pacing Mode:", font=(25))
+        self.pacing_mode_label.grid(row=0, column=0, padx=5, pady=0)
+        self.pacing_modes = ttk.Combobox(self.pacing_modes_frame, values=['AOO', 'VOO', 'AAI', 'VVI'], state='readonly', style="Accent.TCombobox")
+        self.pacing_modes.set('AOO')
+        self.pacing_modes.grid(row=1, column=0, padx=5, pady=0)
+
+
 
         self.HR_frame = ttk.LabelFrame(top, text="Heart Rate Control", padding=(20, 30))
-        self.HR_frame.grid(row=0, column=0, padx=(20, 10), pady=(80, 20), sticky="nsew")
+        self.HR_frame.grid(row=1, column=0, padx=(20, 10), pady=(10, 20), sticky="nsew")
 
         self.LHR_label = ttk.Label(self.HR_frame, text="Lower Heart Rate(ppm)")
         self.LHR_label.grid(row=1, column=0, padx=5, pady=10, sticky="ew")
@@ -106,13 +120,80 @@ class loggedinWindow(object):
         self.MSR_spinbox = ttk.Spinbox(self.HR_frame, from_=50, to=175, textvariable=self.default_MSR, increment=5)
         self.MSR_spinbox.grid(row=6, column=0, padx=5, pady=10, sticky="ew")
 
-        self.save_button = ttk.Button(self.HR_frame, text="Save", command=lambda:self.saveData())
-        self.save_button.grid(row=7, column=0, padx=5, pady=10, sticky="ew")
+
+
+        self.Artial_frame = ttk.LabelFrame(top, text="Artial Paramters", padding=(20, 30))
+        self.Artial_frame.grid(row=1, column=2, padx=(20, 10), pady=(10, 20), sticky="nsew")
+
+        self.Artial_Pulse_Amp_label = ttk.Label(self.Artial_frame, text="Artial Pulse Amplitude(V)")
+        self.Artial_Pulse_Amp_label.grid(row=3, column=0, padx=5, pady=10, sticky="ew")
+        self.default_APA = StringVar(top)
+        self.default_APA.set("3.5")
+        self.APA_inc = 0
+        self.Artial_Pulse_Amp_spinbox = ttk.Spinbox(self.Artial_frame, from_=0, to=7, textvariable=self.default_APA, command = self.calc_APA_inc, increment=self.APA_inc)
+        self.Artial_Pulse_Amp_spinbox.grid(row=4, column=0, padx=5, pady=10, sticky="ew")
+
+        self.Artial_Pulse_Width_label = ttk.Label(self.Artial_frame, text="Artial Pulse Width(ms)")
+        self.Artial_Pulse_Width_label.grid(row=5, column=0, padx=5, pady=10, sticky="ew")
+        self.default_APW = StringVar(top)
+        self.default_APW.set("0.4")
+        self.APW_inc = 0
+        self.Artial_Pulse_Width_spinbox = ttk.Spinbox(self.Artial_frame, from_=0.05, to=1.9, textvariable=self.default_APW,
+                                                    command=self.calc_APW_inc, increment=self.APW_inc, format = "%.2f")
+        self.Artial_Pulse_Width_spinbox.grid(row=6, column=0, padx=5, pady=10, sticky="ew")
+
+        self.Artial_Refractory_Period_label = ttk.Label(self.Artial_frame, text="Artial Refractory Period(ms)")
+        self.Artial_Refractory_Period_label.grid(row=7, column=0, padx=5, pady=10, sticky="ew")
+        self.default_ARP = StringVar(top)
+        self.default_ARP.set("250")
+        self.ARP_inc = 10
+        self.Artial_Refractory_Period_spinbox = ttk.Spinbox(self.Artial_frame, from_=150, to=500,
+                                                      textvariable=self.default_ARP,
+                                                       increment=self.ARP_inc)
+        self.Artial_Refractory_Period_spinbox.grid(row=8, column=0, padx=5, pady=10, sticky="ew")
+
+
+
+        self.Ventricular_frame = ttk.LabelFrame(top, text="Ventricular Paramters", padding=(20, 30))
+        self.Ventricular_frame.grid(row=1, column=3, padx=(20, 10), pady=(10, 20), sticky="nsew")
+
+        self.Ventricular_Pulse_Amp_label = ttk.Label(self.Ventricular_frame, text="Ventricular Pulse Amplitude(V)")
+        self.Ventricular_Pulse_Amp_label.grid(row=3, column=0, padx=5, pady=10, sticky="ew")
+        self.default_VPA = StringVar(top)
+        self.default_VPA.set("3.5")
+        self.VPA_inc = 0
+        self.Ventricular_Pulse_Amp_spinbox = ttk.Spinbox(self.Ventricular_frame, from_=0, to=7, textvariable=self.default_VPA,
+                                                    command=self.calc_VPA_inc, increment=self.VPA_inc)
+        self.Ventricular_Pulse_Amp_spinbox.grid(row=4, column=0, padx=5, pady=10, sticky="ew")
+
+        self.Ventricular_Pulse_Width_label = ttk.Label(self.Ventricular_frame, text="Ventricular Pulse Width(ms)")
+        self.Ventricular_Pulse_Width_label.grid(row=5, column=0, padx=5, pady=10, sticky="ew")
+        self.default_VPW = StringVar(top)
+        self.default_VPW.set("0.4")
+        self.VPW_inc = 0
+        self.Ventricular_Pulse_Width_spinbox = ttk.Spinbox(self.Ventricular_frame, from_=0.05, to=1.9,
+                                                      textvariable=self.default_VPW,
+                                                      command=self.calc_VPW_inc, increment=self.VPW_inc, format="%.2f")
+        self.Ventricular_Pulse_Width_spinbox.grid(row=6, column=0, padx=5, pady=10, sticky="ew")
+
+        self.Ventricular_Refractory_Period_label = ttk.Label(self.Ventricular_frame, text="Ventricular Refractory Period(ms)")
+        self.Ventricular_Refractory_Period_label.grid(row=7, column=0, padx=5, pady=10, sticky="ew")
+        self.default_VRP = StringVar(top)
+        self.default_VRP.set("320")
+        self.VRP_inc = 10
+        self.Ventricular_Refractory_Period_spinbox = ttk.Spinbox(self.Ventricular_frame, from_=150, to=500,
+                                       textvariable=self.default_VRP,
+                                       increment=self.VRP_inc)
+        self.Ventricular_Refractory_Period_spinbox.grid(row=8, column=0, padx=5, pady=10, sticky="ew")
+
 
     def saveData(self):
         # Specify the name to search for and the data to append
-        name_to_find = self.user
-        data_to_append = 'data'
+        name_to_find = self.username
+        data_to_append = [self.pacing_modes.get(), self.LHR_spinbox.get(), self.UHR_spinbox.get(),
+                          self.MSR_spinbox.get(), self.Artial_Pulse_Amp_spinbox.get(), self.Artial_Pulse_Width_spinbox.get(),
+                          self.Artial_Refractory_Period_spinbox.get(), self.Ventricular_Pulse_Amp_spinbox.get(),
+                          self.Ventricular_Pulse_Width_spinbox.get(), self.Ventricular_Refractory_Period_spinbox.get()]
         filename = 'users.txt'
 
         # Read the existing data and modify it
@@ -120,11 +201,10 @@ class loggedinWindow(object):
         with open(filename, mode='r', newline='') as file:
             reader = csv.reader(file)
             for row in reader:
-                print(len(row))
                 if len(row) < 3 and row[0] == name_to_find:  # Check if the first item matches the specific name
-                    row.append(data_to_append)  # Append the new value to the row
+                    row.extend(data_to_append)  # add the data
                 elif len(row) >= 3 and row[0] == name_to_find:
-                    row[2] = data_to_append
+                    row[2:] = data_to_append  # Replace columns 3 onward with new data
                 rows.append(row)
 
         # Write the updated data back to the CSV file
@@ -136,6 +216,46 @@ class loggedinWindow(object):
         self.top.destroy()
         sys.exit()
 
+    def calc_APA_inc(self):
+        val = float(self.Artial_Pulse_Amp_spinbox.get())
+        if val >= 0 and val < 0.5:
+            self.APA_inc = 0.5
+        elif val >= 0.5 and val < 3.5:
+            self.APA_inc = 0.1
+        elif val >= 3.5 and val < 7:
+            self.APA_inc = 0.5
+        self.Artial_Pulse_Amp_spinbox.config(increment=self.APA_inc)
+        return
+
+    def calc_VPA_inc(self):
+        val = float(self.Ventricular_Pulse_Amp_spinbox.get())
+        if val >= 0 and val < 0.5:
+            self.VPA_inc = 0.5
+        elif val >= 0.5 and val < 3.5:
+            self.VPA_inc = 0.1
+        elif val >= 3.5 and val < 7:
+            self.VPA_inc = 0.5
+        self.Ventricular_Pulse_Amp_spinbox.config(increment=self.VPA_inc)
+        return
+
+    def calc_APW_inc(self):
+        val = float(self.Artial_Pulse_Width_spinbox.get())
+        if val >= 0.05 and val < 0.1:
+            self.APW_inc = 0.05
+        elif val >= 0.1 and val < 1.9:
+            self.APW_inc = 0.1
+        self.Artial_Pulse_Width_spinbox.config(increment=self.APW_inc)
+        return
+
+    def calc_VPW_inc(self):
+        val = float(self.Ventricular_Pulse_Width_spinbox.get())
+        if val >= 0.05 and val < 0.1:
+            self.VPW_inc = 0.05
+        elif val >= 0.1 and val < 1.9:
+            self.VPW_inc = 0.1
+        self.Ventricular_Pulse_Width_spinbox.config(increment=self.VPW_inc)
+        return
+
     def calc_LHR_inc(self):
         val = int(self.LHR_spinbox.get())
         if val >= 30 and val < 50:
@@ -145,7 +265,6 @@ class loggedinWindow(object):
         elif val >= 90 and val < 175:
             self.LHR_inc = 5
         self.LHR_spinbox.config(increment=self.LHR_inc)
-
         return
 class mainWindow(object):
     def __init__(self, master):
@@ -189,7 +308,7 @@ class mainWindow(object):
                 #password = password.strip()
                 if username == user and password == passw:
                     print('yay')
-                    self.n = loggedinWindow(self.master, user)
+                    self.n = loggedinWindow(self.master, user, passw)
                     self.master.wait_window(self.n.top)
                     check = 1
         if check == 0:
