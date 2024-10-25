@@ -315,9 +315,10 @@ class mainWindow(object):
             t = messagebox.Message(message="Invalid Username or Password", type=messagebox.OK)
             t.show()
 class ElectrogramData:
-    def __int__(self, AS, AP, AT, TN, VS, VP, PVC, Hy, Sr,
+    def __int__(self, timestamp, AS, AP, AT, TN, VS, VP, PVC, Hy, Sr,
                 UpSmoothing, DownSmoothing, ATRDur, ATRFB,
                 ATREnd, PVP):
+        self.timestamp = timestamp;
         self.AS = AS
         self.AP = AP
         self.AT = AT

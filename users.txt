@@ -1,5 +1,5 @@
 frf,rww
-oop,poop
+oop,ekek,VVI,60,120,140
 epp,ppy
 talha,1234
-t,t,VOO,62,125,135
+t,t,VOO,59,135,120,6.0,0.4,250,3.5,0.4,320
