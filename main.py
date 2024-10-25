@@ -185,12 +185,12 @@ class loggedinWindow(object):
                                        textvariable=self.default_VRP,
                                        increment=self.VRP_inc)
         self.Ventricular_Refractory_Period_spinbox.grid(row=8, column=0, padx=5, pady=10, sticky="ew")
-
+        self.pacing_conv = {'AOO': 1, 'VOO': 2, 'AAI' : 3, 'VVI' : 4}
 
     def saveData(self):
         # Specify the name to search for and the data to append
         name_to_find = self.username
-        data_to_append = [self.pacing_modes.get(), self.LHR_spinbox.get(), self.UHR_spinbox.get(),
+        data_to_append = [self.pacing_conv[self.pacing_modes.get()], self.LHR_spinbox.get(), self.UHR_spinbox.get(),
                           self.MSR_spinbox.get(), self.Artial_Pulse_Amp_spinbox.get(), self.Artial_Pulse_Width_spinbox.get(),
                           self.Artial_Refractory_Period_spinbox.get(), self.Ventricular_Pulse_Amp_spinbox.get(),
                           self.Ventricular_Pulse_Width_spinbox.get(), self.Ventricular_Refractory_Period_spinbox.get()]
