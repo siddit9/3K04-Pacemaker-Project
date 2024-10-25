@@ -3,6 +3,7 @@ import sys
 from tkinter import messagebox
 from tkinter import ttk
 import csv
+from datetime import datetime
 from PIL import Image, ImageTk
 
 
@@ -93,8 +94,7 @@ class loggedinWindow(object):
         self.pacing_modes.set('AOO')
         self.pacing_modes.grid(row=1, column=0, padx=5, pady=0)
 
-        self.report_button = ttk.Button(top, text="Generate Report",
-                                        style="Accent.TButton")
+        self.report_button = ttk.Button(top, text="Generate Report", style="Accent.TButton", command=lambda:self.generateReport())
         self.report_button.grid(row=2, column=0)
 
         self.HR_frame = ttk.LabelFrame(top, text="Heart Rate Control", padding=(20, 30))
@@ -212,6 +212,18 @@ class loggedinWindow(object):
             writer = csv.writer(file)
             writer.writerows(rows)
 
+    def generateReport(self):
+        self.saveData()
+        reportWindow = Toplevel()
+        reportWindow.title("Report")
+        reportWindow.geometry("500x500")
+        # Get the current date and time
+        current_datetime = datetime.now()
+        header_info = ttk.Label(reportWindow, text="McMaster University\n" + current_datetime.strftime("%Y-%m-%d %H:%M") +
+                                "\nModel:\nSerial Number:\nDCM Version 1.5\nBradycardia Parameters Report",
+                                font=("Helvetica", 15))
+        header_info.grid(row=0, column=0)
+
     def exit(self):
         self.top.destroy()
         sys.exit()
@@ -266,6 +278,7 @@ class loggedinWindow(object):
             self.LHR_inc = 5
         self.LHR_spinbox.config(increment=self.LHR_inc)
         return
+
 class mainWindow(object):
     def __init__(self, master):
         self.master = master
