@@ -93,7 +93,9 @@ class loggedinWindow(object):
         self.pacing_modes.set('AOO')
         self.pacing_modes.grid(row=1, column=0, padx=5, pady=0)
 
-
+        self.report_button = ttk.Button(top, text="Generate Report",
+                                        style="Accent.TButton")
+        self.report_button.grid(row=2, column=0)
 
         self.HR_frame = ttk.LabelFrame(top, text="Heart Rate Control", padding=(20, 30))
         self.HR_frame.grid(row=1, column=0, padx=(20, 10), pady=(10, 20), sticky="nsew")
@@ -119,8 +121,6 @@ class loggedinWindow(object):
         self.default_MSR.set("120")
         self.MSR_spinbox = ttk.Spinbox(self.HR_frame, from_=50, to=175, textvariable=self.default_MSR, increment=5)
         self.MSR_spinbox.grid(row=6, column=0, padx=5, pady=10, sticky="ew")
-
-
 
         self.Artial_frame = ttk.LabelFrame(top, text="Artial Paramters", padding=(20, 30))
         self.Artial_frame.grid(row=1, column=2, padx=(20, 10), pady=(10, 20), sticky="nsew")
