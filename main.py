@@ -5,26 +5,40 @@ from tkinter import ttk
 import csv
 from PIL import Image, ImageTk
 
-
+#Window used to display the about information
 class aboutWindow(object):
     def __init__(self, master):
+
+        #Defines the window as being dependent on the base window's existence to display, initializes style
         top = self.top=Toplevel(master)
         self.style = ttk.Style(top)
         self.style.theme_use('forest-light')
+
+        #Initiates frame for information display
         self.about_frame = ttk.Frame(top, padding=(20, 10))
         self.about_frame.grid(row=0, column=0, padx=(0, 10), pady=(20, 0), sticky="nsew")
+
+        #Displays McMaster University and version information in the window's title bar
         self.uni = ttk.Label(self.about_frame, text = 'McMaster University', font = (15))
         self.uni.grid(row=1, column=0, padx=5, pady=0, sticky="new")
         self.ver = ttk.Label(self.about_frame, text='Version 0.1.0', font = (15))
         self.ver.grid(row=2, column=0, padx=5, pady=0, sticky="new")
         self.serial = ttk.Label(self.about_frame, text='x', font = (15))
         self.serial.grid(row=3, column=0, padx=5, pady=0, sticky="new")
+
+        #Cancel button to close the window when clicked
         self.b_cancel = ttk.Button(self.about_frame, text = 'Cancel', command = self.top.destroy, style="Accent.TButton")
         self.b_cancel.grid(row=4, column=0, padx=5, pady=20, sticky="new")
 
+
+#Window used to register new users and check the maximum number of users
 class registerWindow(object):
     def __init__(self, master):
+
+        #Defines the window as being dependent on the base window's existence to display
         top = self.top=Toplevel(master)
+
+        #Initiates information display and input
         self.user = Label(top, text = 'New Username')
         self.user.pack()
         self.user_entry = Entry(top)
@@ -37,6 +51,9 @@ class registerWindow(object):
         self.b_ok.pack()
         self.b_cancel = Button(top, text = 'Cancel', command = self.top.destroy)
         self.b_cancel.pack()
+
+    #Button function to assess capabilities to add new users
+    #Writes new user password to users.txt if available
     def write_new(self):
         with open('users.txt', 'r') as f:
             l = 0
@@ -48,23 +65,36 @@ class registerWindow(object):
             else:
                 self.write()
 
+    #Button function to write new user password to users.txt
     def write(self):
+        cur = []  # List to store existing usernames in the file.
+        #Checks if username already exists
+        with open('users.txt', 'r') as f:
+            cur = [line.split(',')[0] for line in f]
+
+        #writes into users.txt
         with open('users.txt', 'a') as f:
             user, passw = self.user_entry.get(), self.password_entry.get()
-            if len(user) > 0 and len(passw) > 0:
+            if len(user) > 0 and len(passw) > 0 and user not in cur:
                 f.write(user + ',' + passw + '\n')
                 t = messagebox.Message(message="User Created", type=messagebox.OK)
                 t.show()
                 self.top.destroy()
+            elif user in cur:
+                t = messagebox.Message(self.top, message="Username Already Exists", type=messagebox.OK)
+                t.show()
             else:
                 t = messagebox.Message(self.top, message="User/Password Invalid", type=messagebox.OK)
                 t.show()
 
-
+#Window of editing and altering the parameters and pacing modes after login
 class loggedinWindow(object):
     def __init__(self, master, user, password):
+
+        #Initiates window parameters
         self.username = user
         self.password = password
+        self.pacing_ints = {"AOO": 1, "VOO": 2, "AAI": 3, "VVI": 4}
         top = self.top = Toplevel(master)
         self.top.geometry("1000x600")
         self.style = ttk.Style(top)
@@ -73,6 +103,7 @@ class loggedinWindow(object):
         self.widgets_frame.grid(row=0, column=1, padx=10, pady=(30, 10), sticky="nsew", rowspan=3)
         self.widgets_frame.columnconfigure(index=0, weight=1)
 
+        #Displays the pacemaker ID and patient information as well as saving and new patient switching buttons
         self.pacemaker_id = "pc_102"
         self.id_frame = ttk.Frame(top, padding=(20, 10))
         self.id_frame.grid(row=0, column=0, padx=(0, 10), pady=(20, 0), sticky="nsew")
@@ -94,7 +125,8 @@ class loggedinWindow(object):
         self.pacing_modes.grid(row=1, column=0, padx=5, pady=0)
 
 
-
+        #Frames and spinboxes for altering heartbeat parameters
+        #parameters with differening step increments have their own on-use functions for increment control
         self.HR_frame = ttk.LabelFrame(top, text="Heart Rate Control", padding=(20, 30))
         self.HR_frame.grid(row=1, column=0, padx=(20, 10), pady=(10, 20), sticky="nsew")
 
@@ -121,7 +153,8 @@ class loggedinWindow(object):
         self.MSR_spinbox.grid(row=6, column=0, padx=5, pady=10, sticky="ew")
 
 
-
+        #Frame and spinboxes for altering atrial pacing parameters
+        #Parameters with differening step increments have their own on-use functions for increment control
         self.Artial_frame = ttk.LabelFrame(top, text="Artial Paramters", padding=(20, 30))
         self.Artial_frame.grid(row=1, column=2, padx=(20, 10), pady=(10, 20), sticky="nsew")
 
@@ -152,8 +185,8 @@ class loggedinWindow(object):
                                                        increment=self.ARP_inc)
         self.Artial_Refractory_Period_spinbox.grid(row=8, column=0, padx=5, pady=10, sticky="ew")
 
-
-
+        #Frame and spinboxes for altering ventricular parameters
+        # parameters with differening step increments have their own on-use functions for increment control
         self.Ventricular_frame = ttk.LabelFrame(top, text="Ventricular Paramters", padding=(20, 30))
         self.Ventricular_frame.grid(row=1, column=3, padx=(20, 10), pady=(10, 20), sticky="nsew")
 
@@ -190,7 +223,7 @@ class loggedinWindow(object):
     def saveData(self):
         # Specify the name to search for and the data to append
         name_to_find = self.username
-        data_to_append = [self.pacing_modes.get(), self.LHR_spinbox.get(), self.UHR_spinbox.get(),
+        data_to_append = [self.pacing_ints[self.pacing_modes.get()], self.LHR_spinbox.get(), self.UHR_spinbox.get(),
                           self.MSR_spinbox.get(), self.Artial_Pulse_Amp_spinbox.get(), self.Artial_Pulse_Width_spinbox.get(),
                           self.Artial_Refractory_Period_spinbox.get(), self.Ventricular_Pulse_Amp_spinbox.get(),
                           self.Ventricular_Pulse_Width_spinbox.get(), self.Ventricular_Refractory_Period_spinbox.get()]
@@ -212,10 +245,13 @@ class loggedinWindow(object):
             writer = csv.writer(file)
             writer.writerows(rows)
 
+    #Exits window by deleting the current window
     def exit(self):
         self.top.destroy()
         sys.exit()
 
+
+    #Various calculation functions to calculate the increment amount for the various parameters
     def calc_APA_inc(self):
         val = float(self.Artial_Pulse_Amp_spinbox.get())
         if val >= 0 and val < 0.5:
@@ -266,12 +302,19 @@ class loggedinWindow(object):
             self.LHR_inc = 5
         self.LHR_spinbox.config(increment=self.LHR_inc)
         return
+
+#Main window used for logging in and registering new users
 class mainWindow(object):
     def __init__(self, master):
+        #sets itself as the master window all other windows are dependent upon
         self.master = master
         self.style = style
+
+        #Locks the window to specified size
         self.master.geometry("600x550")
         self.master.resizable(False, False)
+
+        #Displays the appropriate labels, buttons and entry boxes
         self.img = ImageTk.PhotoImage(Image.open('./logo1.jpg'))
         self.panel = Label(master, image=self.img)
         self.panel.pack(padx=10, pady=10)
@@ -287,33 +330,44 @@ class mainWindow(object):
         self.log.pack(side=BOTTOM)
         self.about = ttk.Button(master, text='About', command=self.about, style="Accent.TButton")
         self.about.pack(side=TOP)
+
+    #Function to open the registration window
     def createNew(self):
         self.resgister = registerWindow(self.master)
         self.master.wait_window(self.resgister.top)
 
+    #Function to open the about window
     def about(self):
         self.about = aboutWindow(self.master)
         self.master.wait_window(self.about.top)
+
+    #Function to login to the specified user, returns the appropriate parameter modification window
     def login(self):
+        #Retieves entrybox information
         user = self.e1.get()
         passw = self.e2.get()
         check = 0
+
+        #Checks if the user exists in the users.txt file
         with open('users.txt', 'r') as f:
             reader = csv.reader(f)
             for row in reader:
                 username = row[0]
                 password = row[1]
-                #username, password = line.split(',')
-                #username = username.strip()
-                #password = password.strip()
+
+                #Returns new window for parameter modification if user password combo is found
                 if username == user and password == passw:
                     print('yay')
                     self.n = loggedinWindow(self.master, user, passw)
                     self.master.wait_window(self.n.top)
                     check = 1
+
+        #Display error message if user password combo is not found
         if check == 0:
             t = messagebox.Message(message="Invalid Username or Password", type=messagebox.OK)
             t.show()
+
+#Class to store Egram information, will be imporved upon later
 class ElectrogramData:
     def __int__(self, AS, AP, AT, TN, VS, VP, PVC, Hy, Sr,
                 UpSmoothing, DownSmoothing, ATRDur, ATRFB,
