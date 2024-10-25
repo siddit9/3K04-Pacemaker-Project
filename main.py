@@ -1,9 +1,12 @@
+#Importing required libraries
 from tkinter import *
 import sys
 from tkinter import messagebox
 from tkinter import ttk
 import csv
+from datetime import datetime
 from PIL import Image, ImageTk
+
 
 #Window used to display the about information
 class aboutWindow(object):
@@ -102,7 +105,9 @@ class loggedinWindow(object):
         self.widgets_frame = ttk.Frame(top, padding=(0, 0, 0, 10))
         self.widgets_frame.grid(row=0, column=1, padx=10, pady=(30, 10), sticky="nsew", rowspan=3)
         self.widgets_frame.columnconfigure(index=0, weight=1)
-
+        self.report_button = ttk.Button(top, text="Generate Report", style="Accent.TButton",
+                                       command=lambda: self.generateReport())
+        self.report_button.grid(row=2, column=0)
         #Displays the pacemaker ID and patient information as well as saving and new patient switching buttons
         self.pacemaker_id = "pc_102"
         self.id_frame = ttk.Frame(top, padding=(20, 10))
@@ -244,6 +249,23 @@ class loggedinWindow(object):
         with open(filename, mode='w', newline='') as file:
             writer = csv.writer(file)
             writer.writerows(rows)
+
+    # Function to generate a report of the user's data'
+    def generateReport(self):
+        self.saveData()
+        reportWindow = Toplevel()
+        reportWindow.title("Report")
+        reportWindow.geometry("500x500")
+        # Get the current date and time
+        current_datetime = datetime.now()
+        header_info = ttk.Label(reportWindow,
+                                text="McMaster University\n" + current_datetime.strftime("%Y-%m-%d %H:%M") +
+                                     "\nModel:\nSerial Number:\nDCM Version 1.5\nBradycardia Parameters Report",
+                                font=("Helvetica", 15))
+        header_info.grid(row=0, column=0, padx=10, pady=5)
+
+        print_button = ttk.Button(reportWindow, text="Print as PDF", style="Accent.TButton")
+        print_button.grid(row=0, column=2, sticky="ne", padx=10, pady=5)
 
     #Exits window by deleting the current window
     def exit(self):
