@@ -222,7 +222,10 @@ class loggedinWindow(object):
         header_info = ttk.Label(reportWindow, text="McMaster University\n" + current_datetime.strftime("%Y-%m-%d %H:%M") +
                                 "\nModel:\nSerial Number:\nDCM Version 1.5\nBradycardia Parameters Report",
                                 font=("Helvetica", 15))
-        header_info.grid(row=0, column=0)
+        header_info.grid(row=0, column=0, padx=10, pady=5)
+
+        print_button = ttk.Button(reportWindow, text="Print as PDF", style="Accent.TButton")
+        print_button.grid(row=0, column=2, sticky="ne", padx=10, pady=5)
 
     def exit(self):
         self.top.destroy()
