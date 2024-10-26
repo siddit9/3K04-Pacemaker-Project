@@ -340,14 +340,14 @@ class mainWindow(object):
         self.img = ImageTk.PhotoImage(Image.open('./logo1.jpg'))
         self.panel = Label(master, image=self.img)
         self.panel.pack(padx=10, pady=10)
-        self.username = ttk.Label(master, text='Username').pack(side=LEFT)
+        self.username = ttk.Label(master, text='Username:').pack(side=LEFT)
         self.e1 = ttk.Entry(master)
-        self.e1.pack(side=LEFT, pady = 10)
+        self.e1.pack(side=LEFT, pady=10)
         self.e2 = ttk.Entry(master, show="*")
         self.e2.pack(side=RIGHT, pady = 10)
-        self.password = ttk.Label(master, text='Password').pack(side=RIGHT)
+        self.password = ttk.Label(master, text='Password:').pack(side=RIGHT)
         self.rn = ttk.Button(master, text='Register New', command=self.createNew, style="Accent.TButton")
-        self.rn.pack(side=BOTTOM, pady = 10)
+        self.rn.pack(side=BOTTOM, pady=10)
         self.log = ttk.Button(master, text='Login', command=self.login, style="Accent.TButton")
         self.log.pack(side=BOTTOM)
         self.about = ttk.Button(master, text='About', command=self.about, style="Accent.TButton")
@@ -409,7 +409,6 @@ class ElectrogramData:
         self.ATRFB = ATRFB
         self.ATREnd = ATREnd
         self.PVP = PVP
-
 
 root = Tk()
 style = ttk.Style(root)
