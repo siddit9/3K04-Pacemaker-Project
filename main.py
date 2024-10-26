@@ -40,29 +40,29 @@ class registerWindow(object):
 
         #Defines the window as being dependent on the base window's existence to display
         top = self.top=Toplevel(master)
-
+        top.title("Register User")
         #Initiates information display and input
-        self.user = Label(top, text = 'New Username')
+        self.user = ttk.Label(top, text = 'New Username')
         self.user.pack()
-        self.user_entry = Entry(top)
-        self.user_entry.pack()
-        self.password = Label(top, text = 'New Password')
+        self.user_entry = ttk.Entry(top)
+        self.user_entry.pack(pady=(0,10))
+        self.password = ttk.Label(top, text = 'New Password')
         self.password.pack()
-        self.password_entry = Entry(top, show = '*')
-        self.password_entry.pack()
-        self.b_ok = Button(top, text = 'Ok', command = self.write_new)
-        self.b_ok.pack()
-        self.b_cancel = Button(top, text = 'Cancel', command = self.top.destroy)
-        self.b_cancel.pack()
+        self.password_entry = ttk.Entry(top, show = '*')
+        self.password_entry.pack(pady=(0,10))
+        self.b_ok = ttk.Button(top, text = 'Ok', command = self.write_new)
+        self.b_ok.pack(pady=10)
+        self.b_cancel = ttk.Button(top, text = 'Cancel', command = self.top.destroy)
+        self.b_cancel.pack(pady=10)
 
     #Button function to assess capabilities to add new users
     #Writes new user password to users.txt if available
     def write_new(self):
-        with open('users.txt', 'r') as f:
+        with open('users.txt', 'r') as f: # Open the text file
             l = 0
             for line in f:
                 l += 1
-            if l >= 10:
+            if l >= 10: # If greater than 10 users, show message
                 t = messagebox.Message(self.top, message="Maximum Users Reached", type=messagebox.OK)
                 t.show()
             else:
