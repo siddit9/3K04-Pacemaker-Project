@@ -98,10 +98,10 @@ class loggedinWindow(object):
         self.username = user
         self.password = password
         self.pacing_ints = {
-    'AAI': 1, 'AAIR': 2, 'AAT': 3, 'AOOR': 4, 'AOO': 5, 'DDD': 6,
-    'DDDR': 7, 'DDI': 8, 'DDIR': 9, 'DOO': 10, 'DOOR': 11, 'Off': 12,
-    'VDD': 13, 'VDDR': 14, 'VVI': 15, 'VVIR': 16, 'VOO': 17, 'VOOR': 18, 'VVT': 19
-}
+            'AAI': 1, 'AAIR': 2, 'AAT': 3, 'AOOR': 4, 'AOO': 5, 'DDD': 6,
+            'DDDR': 7, 'DDI': 8, 'DDIR': 9, 'DOO': 10, 'DOOR': 11, 'Off': 12,
+            'VDD': 13, 'VDDR': 14, 'VVI': 15, 'VVIR': 16, 'VOO': 17, 'VOOR': 18, 'VVT': 19
+        }
         self.modes_list = ['AAI', 'AAIR', 'AAT', 'AOOR', 'AOO', 'DDD', 'DDDR', 'DDI', 'DDIR', 'DOO', 'DOOR', 'Off', 'VDD', 'VDDR', 'VVI', 'VVIR', 'VVO', 'VVOO', 'VVT']
         top = self.top = Toplevel(master)
         self.top.geometry("1000x600")
@@ -110,9 +110,15 @@ class loggedinWindow(object):
         self.widgets_frame = ttk.Frame(top, padding=(0, 0, 0, 10))
         self.widgets_frame.grid(row=0, column=1, padx=10, pady=(30, 10), sticky="nsew", rowspan=3)
         self.widgets_frame.columnconfigure(index=0, weight=1)
-        self.report_button = ttk.Button(top, text="Generate Report", style="Accent.TButton",
+
+        self.outputs_frame = ttk.Frame(top,padding=(20, 10))
+        self.outputs_frame.grid(row=2, column=0)
+
+        self.report_button = ttk.Button(self.outputs_frame, text="Generate Report", style="Accent.TButton",
                                        command=lambda: self.generateReport())
-        self.report_button.grid(row=2, column=0)
+        self.report_button.grid(row=0, column=0, padx = 10)
+        self.egram_button = ttk.Button(self.outputs_frame, text="Show Egram Data", style="Accent.TButton")
+        self.egram_button.grid(row=0, column=1, padx = 10)
         #Displays the pacemaker ID and patient information as well as saving and new patient switching buttons
         self.pacemaker_id = "pc_102"
         self.id_frame = ttk.Frame(top, padding=(20, 10))
