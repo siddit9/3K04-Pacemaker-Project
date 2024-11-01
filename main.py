@@ -97,7 +97,12 @@ class loggedinWindow(object):
         #Initiates window parameters
         self.username = user
         self.password = password
-        self.pacing_ints = {"AOO": 1, "VOO": 2, "AAI": 3, "VVI": 4}
+        self.pacing_ints = {
+    'AAI': 1, 'AAIR': 2, 'AAT': 3, 'AOOR': 4, 'AOO': 5, 'DDD': 6,
+    'DDDR': 7, 'DDI': 8, 'DDIR': 9, 'DOO': 10, 'DOOR': 11, 'Off': 12,
+    'VDD': 13, 'VDDR': 14, 'VVI': 15, 'VVIR': 16, 'VOO': 17, 'VOOR': 18, 'VVT': 19
+}
+        self.modes_list = ['AAI', 'AAIR', 'AAT', 'AOOR', 'AOO', 'DDD', 'DDDR', 'DDI', 'DDIR', 'DOO', 'DOOR', 'Off', 'VDD', 'VDDR', 'VVI', 'VVIR', 'VVO', 'VVOO', 'VVT']
         top = self.top = Toplevel(master)
         self.top.geometry("1000x600")
         self.style = ttk.Style(top)
@@ -125,7 +130,7 @@ class loggedinWindow(object):
         self.pacing_modes_frame.grid(row = 0, column = 2)
         self.pacing_mode_label = ttk.Label(self.pacing_modes_frame, text="Select Pacing Mode:", font=(25))
         self.pacing_mode_label.grid(row=0, column=0, padx=5, pady=0)
-        self.pacing_modes = ttk.Combobox(self.pacing_modes_frame, values=['AOO', 'VOO', 'AAI', 'VVI'], state='readonly', style="Accent.TCombobox")
+        self.pacing_modes = ttk.Combobox(self.pacing_modes_frame, values=self.modes_list, state='readonly', style="Accent.TCombobox")
         self.pacing_modes.set('AOO')
         self.pacing_modes.grid(row=1, column=0, padx=5, pady=0)
 
