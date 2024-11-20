@@ -17,8 +17,9 @@ class loggedinWindow(object):
 
 
         self.container = ttk.Frame(root)
-        self.canvas = Canvas(self.container, height = 800, width = 1000)
+        self.canvas = Canvas(self.container, height = 600, width = 1000)
         self.scrollbar = Scrollbar(self.container,  orient="vertical", command=self.canvas.yview)
+        self.scrollbarh = Scrollbar(self.container, orient="horizontal", command=self.canvas.xview)
         top = self.top = ttk.Frame(self.canvas)
         top.bind(
             "<Configure>",
@@ -27,7 +28,7 @@ class loggedinWindow(object):
             )
         )
         self.canvas.create_window((0, 0), window=self.top, anchor="nw")
-        self.canvas.configure(yscrollcommand=self.scrollbar.set)
+        self.canvas.configure(yscrollcommand=self.scrollbar.set, xscrollcommand=self.scrollbarh.set)
         """
         self.scrollbar.pack(side=RIGHT, fill=Y)
         self.top = top = ttk.Frame(main_frame)
@@ -102,6 +103,15 @@ class loggedinWindow(object):
         self.default_MSR.set("120")
         self.MSR_spinbox = ttk.Spinbox(self.HR_frame, from_=50, to=175, textvariable=self.default_MSR, increment=5)
         self.MSR_spinbox.grid(row=6, column=0, padx=5, pady=10, sticky="ew")
+
+        self.Hysteresis_limit_label = ttk.Label(self.HR_frame, text="Hysteresis Rate Limit(ppm)")
+        self.Hysteresis_limit_label.grid(row=7, column=0, padx=5, pady=10, sticky="ew")
+        self.default_HL = StringVar(top)
+        self.default_HL.set("60")
+        self.HL_inc = 0
+        self.HL_spinbox = ttk.Spinbox(self.HR_frame, from_=30, to=175, textvariable=self.default_HL,
+                                       command=self.calc_HL_inc, increment=self.HL_inc)
+        self.HL_spinbox.grid(row=8, column=0, padx=5, pady=10, sticky="ew")
 
 ####################################################################################################################################################
         #Frame and spinboxes for rate adaptive pacing
@@ -250,9 +260,12 @@ class loggedinWindow(object):
                                        increment=self.VRP_inc)
         self.Ventricular_Refractory_Period_spinbox.grid(row=8, column=0, padx=5, pady=10, sticky="ew")
 
+    # Pack the frames and spinboxes in the main window
+        self.scrollbar.pack(side="left", fill="both")
+        self.scrollbarh.pack(side="top", fill="both")
         self.container.pack(side = "top", fill = "both")
         self.canvas.pack(side="left", fill="both", expand=True)
-        self.scrollbar.pack(side="right", fill="both")
+
     def saveData(self):
         # Specify the name to search for and the data to append
         name_to_find = self.username
@@ -351,4 +364,15 @@ class loggedinWindow(object):
         elif val >= 90 and val < 175:
             self.LHR_inc = 5
         self.LHR_spinbox.config(increment=self.LHR_inc)
+        return
+
+    def calc_HL_inc(self):
+        val = int(self.HL_spinbox.get())
+        if val >= 30 and val < 50:
+            self.HL_inc = 5
+        elif val >= 50 and val < 90:
+            self.HL_inc = 1
+        elif val >= 90 and val < 175:
+            self.HL_inc = 5
+        self.HL_spinbox.config(increment=self.HL_inc)
         return
