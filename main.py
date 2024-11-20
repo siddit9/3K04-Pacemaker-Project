@@ -17,7 +17,7 @@ class mainWindow(object):
         self.style = style
 
         #Locks the window to specified size
-        self.master.geometry("600x550")
+        #self.master.geometry("600x550")
         self.master.resizable(False, False)
 
         #Displays the appropriate labels, buttons and entry boxes
