@@ -13,7 +13,8 @@ class loggedinWindow(object):
         root = self.main_frame = Toplevel(master)
         self.style = ttk.Style(root)
         self.style.theme_use('forest-light')
-
+        self.pacing_ints = {'AAT':1,'VVT':2, 'AOO':3, 'AAI':4, 'VOO':5, 'VVI':6, 'VDD':7, 'DOO':8, 'DDI':9,
+                       'DDD':10, 'AOOR':11, 'AAIR':12, 'VOOR':13, 'VVIR':14, 'VDDR':15, 'DOOR':16, 'DDIR':17, 'DDDR':18}
 
 
         self.container = ttk.Frame(root)
