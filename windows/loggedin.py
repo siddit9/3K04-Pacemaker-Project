@@ -342,6 +342,9 @@ class loggedinWindow(object):
 
         print(byte_data)
 
+        with open("sent_data.txt", 'a') as f:
+            f.write(byte_data)
+
         #ser = serial.Serial('COM7', 115200)
         #ser.write(byte_data)
         #recieved_data = ser.read(5)
