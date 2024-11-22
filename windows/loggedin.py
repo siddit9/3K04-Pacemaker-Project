@@ -15,8 +15,8 @@ class loggedinWindow(object):
         root = self.main_frame = Toplevel(master)
         self.style = ttk.Style(root)
         self.style.theme_use('forest-light')
-        self.pacing_ints = {'AAT':1,'VVT':2, 'AOO':3, 'AAI':4, 'VOO':5, 'VVI':6, 'VDD':7, 'DOO':8, 'DDI':9,
-                       'DDD':10, 'AOOR':11, 'AAIR':12, 'VOOR':13, 'VVIR':14, 'VDDR':15, 'DOOR':16, 'DDIR':17, 'DDDR':18}
+        self.pacing_ints = {'AAT':10,'VVT':11, 'AOO':1, 'AAI':3, 'VOO':2, 'VVI':4, 'VDD':12, 'DOO':13, 'DDI':14,
+                       'DDD':15, 'AOOR':5, 'AAIR':7, 'VOOR':6, 'VVIR':8, 'VDDR':16, 'DOOR':17, 'DDIR':18, 'DDDR':9}
 
 
         self.container = ttk.Frame(root)
@@ -168,38 +168,57 @@ class loggedinWindow(object):
         self.default_FixedAVdelay.set("150")
         self.FixedAVdelay_spinbox = ttk.Spinbox(self.AV_frame, from_=70, to=300, textvariable=self.default_FixedAVdelay,
                                                    increment=10)
-        self.FixedAVdelay_spinbox.grid(row=2, column=0, padx=5, pady=10, sticky="ew")
+        self.FixedAVdelay_spinbox.grid(row=1, column=0, padx=5, pady=10, sticky="ew")
 
         self.DynamicAVDelay_label = ttk.Label(self.AV_frame, text="Dynamic AV Delay")
-        self.DynamicAVDelay_label.grid(row=3, column=0, padx=5, pady=10, sticky="ew")
+        self.DynamicAVDelay_label.grid(row=2, column=0, padx=5, pady=10, sticky="ew")
         self.default_DynamicAVDelay = StringVar(top)
         self.default_DynamicAVDelay.set("OFF")
         self.DynamicAVDelay_combobox = ttk.Combobox(self.AV_frame, state = "readonly", values = ["ON", "OFF"], style="Accent.TCombobox", textvariable=self.default_DynamicAVDelay)
-        self.DynamicAVDelay_combobox.grid(row=4, column=0, padx=5, pady=10, sticky="ew")
+        self.DynamicAVDelay_combobox.grid(row=3, column=0, padx=5, pady=10, sticky="ew")
 
         self.MinDynamicAVdelay_label = ttk.Label(self.AV_frame, text="Minimum Dynamic AV Delay(ms)")
-        self.MinDynamicAVdelay_label.grid(row=5, column=0, padx=5, pady=10, sticky="ew")
+        self.MinDynamicAVdelay_label.grid(row=4, column=0, padx=5, pady=10, sticky="ew")
         self.default_MinDynamicAVdelay = StringVar(top)
         self.default_MinDynamicAVdelay.set("50")
         self.MinDynamicAVdelay_spinbox = ttk.Spinbox(self.AV_frame, from_=30, to=100,
                                                             textvariable=self.default_MinDynamicAVdelay,
                                                             increment=10)
-        self.MinDynamicAVdelay_spinbox.grid(row=6, column=0, padx=5, pady=10, sticky="ew")
+        self.MinDynamicAVdelay_spinbox.grid(row=5, column=0, padx=5, pady=10, sticky="ew")
 
         self.SensedAVdelayOffset_label = ttk.Label(self.AV_frame, text="Sensed Dynamic AV Delay Offset(ms)")
-        self.SensedAVdelayOffset_label.grid(row=7, column=0, padx=5, pady=10, sticky="ew")
+        self.SensedAVdelayOffset_label.grid(row=6, column=0, padx=5, pady=10, sticky="ew")
         self.default_SensedAVdelayOffset = StringVar(top)
         self.default_SensedAVdelayOffset.set("0")
         self.SensedAVdelayOffset_inc = 0
         self.SensedAVdelayOffset_spinbox = ttk.Spinbox(self.AV_frame, from_=-100, to=0, textvariable=self.default_SensedAVdelayOffset,
                                                      increment=10)
-        self.SensedAVdelayOffset_spinbox.grid(row=8, column=0, padx=5, pady=10, sticky="ew")
+        self.SensedAVdelayOffset_spinbox.grid(row=7, column=0, padx=5, pady=10, sticky="ew")
 
+        self.PVARP_label = ttk.Label(self.AV_frame, text="Post Ventricular Atrial Refactory Period(ms)")
+        self.PVARP_label.grid(row=8, column=0, padx=5, pady=10, sticky="ew")
+        self.default_PVARP = StringVar(top)
+        self.default_PVARP.set("250")
+        self.PVARP_inc = 10
+        self.PVARP_spinbox = ttk.Spinbox(self.AV_frame, from_=-150, to=500,
+                                                       textvariable=self.default_PVARP,
+                                                       increment=10)
+        self.PVARP_spinbox.grid(row=9, column=0, padx=5, pady=10, sticky="ew")
+
+        self.PVARP_ext_label = ttk.Label(self.AV_frame, text="Post Ventricular Atrial Refactory Period Extended(ms)")
+        self.PVARP_ext_label.grid(row=10, column=0, padx=5, pady=10, sticky="ew")
+        self.default_PVARP_ext = StringVar(top)
+        self.default_PVARP_ext.set("0")
+        self.PVARP_inc = 50
+        self.PVARP_spinbox = ttk.Spinbox(self.AV_frame, from_=0, to=400,
+                                         textvariable=self.default_PVARP_ext,
+                                         increment=10)
+        self.PVARP_spinbox.grid(row=11, column=0, padx=5, pady=10, sticky="ew")
 ############################################################################################################################################################
         #Frame and spinboxes for altering atrial pacing parameters
         #Parameters with differening step increments have their own on-use functions for increment control
         self.Artial_frame = ttk.LabelFrame(top, text="Artial Paramters", padding=(20, 30))
-        self.Artial_frame.grid(row=2, column=1, padx=(20, 10), pady=(10, 20), sticky="nsew")
+        self.Artial_frame.grid(row=2, column=0, padx=(20, 10), pady=(10, 20), sticky="nsew")
 
         self.Artial_Pulse_Amp_label = ttk.Label(self.Artial_frame, text="Artial Pulse Amplitude(V)")
         self.Artial_Pulse_Amp_label.grid(row=3, column=0, padx=5, pady=10, sticky="ew")
@@ -232,7 +251,7 @@ class loggedinWindow(object):
         #Frame and spinboxes for altering ventricular parameters
         #Parameters with differening step increments have their own on-use functions for increment control
         self.Ventricular_frame = ttk.LabelFrame(top, text="Ventricular Paramters", padding=(20, 30))
-        self.Ventricular_frame.grid(row=2, column=2, padx=(20, 10), pady=(10, 20), sticky="nsew")
+        self.Ventricular_frame.grid(row=2, column=1, padx=(20, 10), pady=(10, 20), sticky="nsew")
 
         self.Ventricular_Pulse_Amp_label = ttk.Label(self.Ventricular_frame, text="Ventricular Pulse Amplitude(V)")
         self.Ventricular_Pulse_Amp_label.grid(row=3, column=0, padx=5, pady=10, sticky="ew")
@@ -263,11 +282,25 @@ class loggedinWindow(object):
                                        increment=self.VRP_inc)
         self.Ventricular_Refractory_Period_spinbox.grid(row=8, column=0, padx=5, pady=10, sticky="ew")
 
+        self.Ventricular_Blanking_label = ttk.Label(self.Ventricular_frame,
+                                                             text="Ventricular Blanking Period(ms)")
+        self.Ventricular_Blanking_label.grid(row=9, column=0, padx=5, pady=10, sticky="ew")
+        self.default_VB = StringVar(top)
+        self.default_VB.set("40")
+        self.VB_inc = 10
+        self.Ventricular_Blanking_spinbox = ttk.Spinbox(self.Ventricular_frame, from_=30, to=60,
+                                                                 textvariable=self.default_VB,
+                                                                 increment=self.VB_inc)
+        self.Ventricular_Blanking_spinbox.grid(row=10, column=0, padx=5, pady=10, sticky="ew")
+
+
+
+    ################################################################################################################################################################################
     # Pack the frames and spinboxes in the main window
-        self.scrollbar.pack(side="left", fill="both")
-        self.scrollbarh.pack(side="top", fill="both")
-        self.container.pack(side = "top", fill = "both")
-        self.canvas.pack(side="left", fill="both", expand=True)
+        self.scrollbar.pack(side="right", fill="both")
+        self.scrollbarh.pack(side="bottom", fill="both")
+        self.container.pack(side = "bottom", fill = "both")
+        self.canvas.pack(side="right", fill="both", expand=True)
 
     def saveData(self):
         # Specify the name to search for and the data to append
