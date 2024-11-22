@@ -379,8 +379,9 @@ class loggedinWindow(object):
 
         print(byte_data)
 
-        with open("sent_data.txt", 'a') as f:
-            f.write(byte_data)
+        print(struct.unpack(format_string,byte_data))
+        #with open("sent_data.txt", 'a') as f:
+         #   f.write(str(byte_data)+'\n')
 
         #ser = serial.Serial('COM7', 115200)
         #ser.write(byte_data)
