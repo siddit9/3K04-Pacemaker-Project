@@ -3,6 +3,8 @@ from tkinter import ttk
 from datetime import datetime
 import sys
 import csv
+import serial
+import struct
 
 class loggedinWindow(object):
     def __init__(self, master, user, password):
@@ -275,6 +277,45 @@ class loggedinWindow(object):
                           self.Artial_Refractory_Period_spinbox.get(), self.Ventricular_Pulse_Amp_spinbox.get(),
                           self.Ventricular_Pulse_Width_spinbox.get(), self.Ventricular_Refractory_Period_spinbox.get()]
         filename = './saves/'+self.username+'.txt'
+
+        data_to_send = [1, #
+                        1, # 1= Set params, 0 = echo params
+                        0, # Response type
+                        self.pacing_ints[self.pacing_modes.get()],
+                        int(self.Artial_Refractory_Period_spinbox.get()),
+                        int(self.Ventricular_Refractory_Period_spinbox.get()),
+                        float(self.Artial_Pulse_Amp_spinbox.get()),
+                        float(self.Ventricular_Pulse_Amp_spinbox.get()),
+                        int(self.Artial_Pulse_Width_spinbox.get()),
+                        int(self.Ventricular_Pulse_Width_spinbox.get()),
+                        60, # PPM
+                        90, # ATR_CMP_REF_PWM
+                        90, # VENT_CMP_REF_PWM
+                        10000, # REACTION_TIME
+                        30000, # RECOVERY TIME
+                        200, # PVARP
+                        40, # FIXED AV DELAY
+                        8, # RESPOSE_FACTOR
+                        10, # ACTIVITY THRESHOLD
+                        60, # LRL
+                        120, # URL
+                        120 # MAXIMUM SENSOR RATE
+                        ]
+
+        # Adjust the format to match your data structure -> H is uint16, B is uint8, f is single
+        format_string = 'BBBBHHffHHBBBHHBBBBBBB'
+
+        byte_data = struct.pack(format_string, *data_to_send)
+
+        print(byte_data)
+
+        #ser = serial.Serial('COM7', 115200)
+        #ser.write(byte_data)
+        #recieved_data = ser.read(5)
+        #print(f"Received Data: {recieved_data}")
+
+        # Close the serial port
+        #ser.close()
 
         # Read the existing data and modify it
         rows = []

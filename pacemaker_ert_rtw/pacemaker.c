@@ -9,7 +9,7 @@
  *
  * Model version                  : 1.6
  * Simulink Coder version         : 9.3 (R2020a) 18-Nov-2019
- * C/C++ source code generated on : Wed Nov 20 14:55:39 2024
+ * C/C++ source code generated on : Wed Nov 20 16:53:43 2024
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -153,9 +153,9 @@ void pacemaker_step(void)
 
    default:
     /* case IN_STANDBY: */
-    if ((status == 0) && (RxData[0] == 3)) {
+    if ((status == 0) && (RxData[0] == 1)) {
       switch (RxData[1]) {
-       case 4:
+       case 2:
         pacemaker_DW.is_c3_pacemaker = pacemaker_IN_SET_PARAM;
         pacemaker_B.red_enable = RxData[2];
         pacemaker_B.green_enable = RxData[3];
@@ -166,7 +166,7 @@ void pacemaker_step(void)
                ((size_t)1 * sizeof(uint16_T)));
         break;
 
-       case 34:
+       case 1:
         pacemaker_DW.is_c3_pacemaker = pacemaker_IN_ECHO_PARAM;
         send_params();
         break;
