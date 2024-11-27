@@ -352,55 +352,38 @@ class loggedinWindow(object):
 ####################### Nikha
 
     def generateElectrogram(self):
-        #Example data values
-        print("View Egram button clicked!")
+        # Example data values
         egram_data = ElectrogramData(
             AS=1, AP=1, AT=1, TN=1, VS=1, VP=1, PVC=1, Hy=1, Sr=1,
             UpSmoothing=1, DownSmoothing=1, ATRDur=1, ATRFB=1, ATREnd=1, PVP=1
         )
 
-        
         egram_window = Toplevel(self.top)
         egram_window.title("Electrogram")
-        egram_window.geometry("800x600") 
-        
-        canvas = Canvas(egram_window)
-        canvas.pack(side="left", fill="both", expand=True)
+        egram_window.geometry("800x600")
 
-        #Add vertical and horizontal scrollbars
-        scrollbar_y = Scrollbar(egram_window, orient="vertical", command=canvas.yview)
-        scrollbar_y.pack(side="right", fill="y")
-        scrollbar_x = Scrollbar(egram_window, orient="horizontal", command=canvas.xview)
-        scrollbar_x.pack(side="bottom", fill="x")
+        plot_frame = ttk.Frame(egram_window)
+        plot_frame.pack(side="top", fill="both", expand=True)
 
-        canvas.configure(yscrollcommand=scrollbar_y.set, xscrollcommand=scrollbar_x.set)
+        fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 12))  
 
-        
-        plot_frame = ttk.Frame(canvas)
-        canvas.create_window((0, 0), window=plot_frame, anchor="nw")
+        plt.subplots_adjust(hspace=0.5)
 
-       
-        fig, ax = plt.subplots(figsize=(12, 6)) 
+        ax1.plot(range(100), range(100)) 
+        ax1.set_title("Electrogram 1")
+        ax1.set_xlabel("Time")
+        ax1.set_ylabel("Amplitude")
 
-        #Example plotting (replace with actual electrogram data plotting)
-        ax.plot(range(100), range(100))  
-
-        ax.set_title("Electrogram")
-        ax.set_xlabel("Time")
-        ax.set_ylabel("Amplitude")
+        ax2.plot(range(100), [x**2 for x in range(100)]) 
+        ax2.set_title("Electrogram 2")
+        ax2.set_xlabel("Time")
+        ax2.set_ylabel("Amplitude")
 
         plot_canvas = FigureCanvasTkAgg(fig, plot_frame)
         plot_canvas.draw()
 
-        
-        plot_canvas.get_tk_widget().grid(row=0, column=0, padx=5, pady=5, sticky="nsew")
+        plot_canvas.get_tk_widget().pack(fill="both", expand=True)   
 
-        
-        plot_frame.update_idletasks()
-        canvas.config(scrollregion=canvas.bbox("all"))
-
-        
-        canvas.config(width=fig.get_figwidth() * 100, height=fig.get_figheight() * 100)  
 
 #################### Nikha
     

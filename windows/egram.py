@@ -1,8 +1,13 @@
 import matplotlib
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+import numpy as np
+from tkinter import Toplevel
 
 
 class ElectrogramData:
-    def __int__(self, AS, AP, AT, TN, VS, VP, PVC, Hy, Sr,
+    #def __int__(self, AS, AP, AT, TN, VS, VP, PVC, Hy, Sr,
+    def __init__(self, AS, AP, AT, TN, VS, VP, PVC, Hy, Sr,
                 UpSmoothing, DownSmoothing, ATRDur, ATRFB,
                 ATREnd, PVP):
         self.AS = AS
@@ -20,3 +25,7 @@ class ElectrogramData:
         self.ATRFB = ATRFB
         self.ATREnd = ATREnd
         self.PVP = PVP
+
+
+
+
