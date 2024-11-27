@@ -89,6 +89,8 @@ class loggedinWindow(object):
 
         self.egram_view.grid(row=2, column=0, padx=(70,10), pady=(10,10), sticky="nsew")
 
+        self.output_button = ttk.Button(top, text = "Update Pacemaker", style="Accent.TButton", command = self.send_to_pacemaker)
+        self.output_button.grid(row=2, column=2, padx=(70,10), pady=(10,10), sticky="nsew")
 ###############################################################################################################################################
         #Frames and spinboxes for altering heartbeat parameters
         #parameters with differening step increments have their own on-use functions for increment control
@@ -386,19 +388,10 @@ class loggedinWindow(object):
 
 
 #################### Nikha
-    
-    def saveData(self):
-        # Specify the name to search for and the data to append
-        name_to_find = self.username
-        data_to_append = [self.pacing_ints[self.pacing_modes.get()], self.LHR_spinbox.get(), self.UHR_spinbox.get(),
-                          self.MSR_spinbox.get(), self.Artial_Pulse_Amp_spinbox.get(), self.Artial_Pulse_Width_spinbox.get(),
-                          self.Artial_Refractory_Period_spinbox.get(), self.Ventricular_Pulse_Amp_spinbox.get(),
-                          self.Ventricular_Pulse_Width_spinbox.get(), self.Ventricular_Refractory_Period_spinbox.get()]
-        filename = './saves/'+self.username+'.txt'
-
-        data_to_send = [1, #
-                        1, # 1= Set params, 2 = echo params
-                        0, # Response type
+    def send_to_pacemaker(self):
+        data_to_send = [1,  #
+                        1,  # 1= Set params, 2 = echo params
+                        0,  # Response type
                         self.pacing_ints[self.pacing_modes.get()],
                         int(self.Artial_Refractory_Period_spinbox.get()),
                         int(self.Ventricular_Refractory_Period_spinbox.get()),
@@ -406,18 +399,18 @@ class loggedinWindow(object):
                         float(self.Ventricular_Pulse_Amp_spinbox.get()),
                         int(self.Artial_Pulse_Width_spinbox.get()),
                         int(self.Ventricular_Pulse_Width_spinbox.get()),
-                        60, # PPM
-                        90, # ATR_CMP_REF_PWM
-                        90, # VENT_CMP_REF_PWM
-                        10000, # REACTION_TIME
-                        30000, # RECOVERY TIME
-                        200, # PVARP
-                        40, # FIXED AV DELAY
-                        8, # RESPOSE_FACTOR
-                        10, # ACTIVITY THRESHOLD
-                        60, # LRL
-                        120, # URL
-                        120 # MAXIMUM SENSOR RATE
+                        60,  # PPM
+                        90,  # ATR_CMP_REF_PWM
+                        90,  # VENT_CMP_REF_PWM
+                        10000,  # REACTION_TIME
+                        30000,  # RECOVERY TIME
+                        200,  # PVARP
+                        40,  # FIXED AV DELAY
+                        8,  # RESPOSE_FACTOR
+                        10,  # ACTIVITY THRESHOLD
+                        60,  # LRL
+                        120,  # URL
+                        120  # MAXIMUM SENSOR RATE
                         ]
 
         # Adjust the format to match your data structure -> H is uint16, B is uint8, f is single
@@ -427,7 +420,6 @@ class loggedinWindow(object):
 
         print(f"Wrote Data: {byte_data}")
         print(data_to_send)
-
 
         # with open("sent_data.txt", 'a') as f:
         #    f.write(str(byte_data)+'\n')
@@ -439,6 +431,15 @@ class loggedinWindow(object):
         print(struct.unpack('>BBHHffHHBBBHHBBBBBBB', recieved_data))
 
         ser.close()
+
+    def saveData(self):
+        # Specify the name to search for and the data to append
+        name_to_find = self.username
+        data_to_append = [self.pacing_ints[self.pacing_modes.get()], self.LHR_spinbox.get(), self.UHR_spinbox.get(),
+                          self.MSR_spinbox.get(), self.Artial_Pulse_Amp_spinbox.get(), self.Artial_Pulse_Width_spinbox.get(),
+                          self.Artial_Refractory_Period_spinbox.get(), self.Ventricular_Pulse_Amp_spinbox.get(),
+                          self.Ventricular_Pulse_Width_spinbox.get(), self.Ventricular_Refractory_Period_spinbox.get()]
+        filename = './saves/'+self.username+'.txt'
 
         # Read the existing data and modify it
         rows = []
