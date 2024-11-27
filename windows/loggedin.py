@@ -397,7 +397,7 @@ class loggedinWindow(object):
         filename = './saves/'+self.username+'.txt'
 
         data_to_send = [1, #
-                        1, # 1= Set params, 0 = echo params
+                        1, # 1= Set params, 2 = echo params
                         0, # Response type
                         self.pacing_ints[self.pacing_modes.get()],
                         int(self.Artial_Refractory_Period_spinbox.get()),
@@ -421,23 +421,24 @@ class loggedinWindow(object):
                         ]
 
         # Adjust the format to match your data structure -> H is uint16, B is uint8, f is single
-        format_string = 'BBBBHHffHHBBBHHBBBBBBB'
+        format_string = '>BBBBHHffHHBBBHHBBBBBBB'
 
         byte_data = struct.pack(format_string, *data_to_send)
 
-        print(byte_data)
+        print(f"Wrote Data: {byte_data}")
+        print(data_to_send)
 
-        print(struct.unpack(format_string,byte_data))
-        #with open("sent_data.txt", 'a') as f:
-         #   f.write(str(byte_data)+'\n')
 
-        #ser = serial.Serial('COM7', 115200)
-        #ser.write(byte_data)
-        #recieved_data = ser.read(5)
-        #print(f"Received Data: {recieved_data}")
+        # with open("sent_data.txt", 'a') as f:
+        #    f.write(str(byte_data)+'\n')
 
-        # Close the serial port
-        #ser.close()
+        ser = serial.Serial('COM7', 115200)
+        ser.write(byte_data)
+        recieved_data = ser.read(32)
+        print(f"Received Data: {recieved_data}")
+        print(struct.unpack('>BBHHffHHBBBHHBBBBBBB', recieved_data))
+
+        ser.close()
 
         # Read the existing data and modify it
         rows = []
