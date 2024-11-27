@@ -4,6 +4,11 @@ from datetime import datetime
 import sys
 import csv
 
+#### Nikha
+from windows.egram import ElectrogramData
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+
 class loggedinWindow(object):
     def __init__(self, master, user, password):
 
@@ -73,8 +78,13 @@ class loggedinWindow(object):
         self.report_button = ttk.Button(self.report_frame, text="Generate Report", style="Accent.TButton",
                                         command=lambda: self.generateReport())
         self.report_button.grid(row=0, column=0, padx=(70, 10), sticky="nsew")
+
+        #Edited the following code to view the electrogram
+        #self.egram_view = ttk.Button(self.report_frame, text="View Egram", style="Accent.TButton",
+                                        #command=lambda: self.generateReport())
         self.egram_view = ttk.Button(self.report_frame, text="View Egram", style="Accent.TButton",
-                                        command=lambda: self.generateReport())
+                                        command=self.generateElectrogram)       
+
         self.egram_view.grid(row=2, column=0, padx=(70,10), pady=(10,10), sticky="nsew")
 
 ###############################################################################################################################################
@@ -267,6 +277,61 @@ class loggedinWindow(object):
         self.container.pack(side = "top", fill = "both")
         self.canvas.pack(side="left", fill="both", expand=True)
 
+####################### Nikha
+
+    def generateElectrogram(self):
+        #Example data values
+        print("View Egram button clicked!")
+        egram_data = ElectrogramData(
+            AS=1, AP=1, AT=1, TN=1, VS=1, VP=1, PVC=1, Hy=1, Sr=1,
+            UpSmoothing=1, DownSmoothing=1, ATRDur=1, ATRFB=1, ATREnd=1, PVP=1
+        )
+
+        
+        egram_window = Toplevel(self.top)
+        egram_window.title("Electrogram")
+        egram_window.geometry("800x600") 
+        
+        canvas = Canvas(egram_window)
+        canvas.pack(side="left", fill="both", expand=True)
+
+        #Add vertical and horizontal scrollbars
+        scrollbar_y = Scrollbar(egram_window, orient="vertical", command=canvas.yview)
+        scrollbar_y.pack(side="right", fill="y")
+        scrollbar_x = Scrollbar(egram_window, orient="horizontal", command=canvas.xview)
+        scrollbar_x.pack(side="bottom", fill="x")
+
+        canvas.configure(yscrollcommand=scrollbar_y.set, xscrollcommand=scrollbar_x.set)
+
+        
+        plot_frame = ttk.Frame(canvas)
+        canvas.create_window((0, 0), window=plot_frame, anchor="nw")
+
+       
+        fig, ax = plt.subplots(figsize=(12, 6)) 
+
+        #Example plotting (replace with actual electrogram data plotting)
+        ax.plot(range(100), range(100))  
+
+        ax.set_title("Electrogram")
+        ax.set_xlabel("Time")
+        ax.set_ylabel("Amplitude")
+
+        plot_canvas = FigureCanvasTkAgg(fig, plot_frame)
+        plot_canvas.draw()
+
+        
+        plot_canvas.get_tk_widget().grid(row=0, column=0, padx=5, pady=5, sticky="nsew")
+
+        
+        plot_frame.update_idletasks()
+        canvas.config(scrollregion=canvas.bbox("all"))
+
+        
+        canvas.config(width=fig.get_figwidth() * 100, height=fig.get_figheight() * 100)  
+
+#################### Nikha
+    
     def saveData(self):
         # Specify the name to search for and the data to append
         name_to_find = self.username
