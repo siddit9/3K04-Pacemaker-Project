@@ -84,4 +84,3 @@ root.tk.call("source", "./Forest-ttk-theme/forest-light.tcl")
 style.theme_use("forest-light")
 m = mainWindow(root)
 root.mainloop()
-
