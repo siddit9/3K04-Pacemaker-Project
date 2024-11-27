@@ -6,7 +6,6 @@ from tkinter import Toplevel
 
 
 class ElectrogramData:
-    #def __int__(self, AS, AP, AT, TN, VS, VP, PVC, Hy, Sr,
     def __init__(self, AS, AP, AT, TN, VS, VP, PVC, Hy, Sr,
                 UpSmoothing, DownSmoothing, ATRDur, ATRFB,
                 ATREnd, PVP):
