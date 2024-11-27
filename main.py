@@ -68,11 +68,11 @@ class mainWindow(object):
 
             username = red[0].strip()
             password = red[1].strip()
-            print(username,user, password, passw)
+            #print(username,user, password, passw)
 
                 #Returns new window for parameter modification if user password combo is found
             if username == user and password == passw:
-                    print('yay')
+                    #print('yay')
                     self.n = loggedinWindow(self.master, user, passw, key)
                     self.master.wait_window(self.n.top)
                     check = 1
