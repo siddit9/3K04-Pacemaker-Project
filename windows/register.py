@@ -1,10 +1,13 @@
 from tkinter import *
 from tkinter import messagebox
 import os
+from cryptography.fernet import Fernet
+
+
 #Window used to register new users and check the maximum number of users
 class registerWindow(object):
-    def __init__(self, master):
-
+    def __init__(self, master, key):
+        self.fernet = Fernet(key)
         #Defines the window as being dependent on the base window's existence to display
         top = self.top=Toplevel(master)
 
@@ -40,10 +43,10 @@ class registerWindow(object):
     def write(self):
 
         #writes into users.txt
-        with open("./saves/"+self.user_entry.get()+'.txt', 'a') as f:
+        with open("./saves/"+self.user_entry.get()+'.txt', 'wb') as f:
             user, passw = self.user_entry.get(), self.password_entry.get()
             if len(user) > 0 and len(passw) > 0:
-                f.write(user + ',' + passw + '\n')
+                f.write(self.fernet.encrypt((user + ',' + passw).encode()))
                 t = messagebox.Message(message="User Created", type=messagebox.OK)
                 t.show()
                 self.top.destroy()

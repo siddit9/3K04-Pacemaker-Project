@@ -6,14 +6,16 @@ import csv
 import serial
 import struct
 
+from cryptography.fernet import Fernet
+
 #### Nikha
 from windows.egram import ElectrogramData
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 class loggedinWindow(object):
-    def __init__(self, master, user, password):
-
+    def __init__(self, master, user, password, key):
+        self.fernet = Fernet(key)
         #Initiates window parameters
         self.username = user
         self.password = password
@@ -25,7 +27,7 @@ class loggedinWindow(object):
 
 
         self.container = ttk.Frame(root)
-        self.canvas = Canvas(self.container, height = 600, width = 1000)
+        self.canvas = Canvas(self.container, height = 900, width = 1000)
         self.scrollbar = Scrollbar(self.container,  orient="vertical", command=self.canvas.yview)
         self.scrollbarh = Scrollbar(self.container, orient="horizontal", command=self.canvas.xview)
         top = self.top = ttk.Frame(self.canvas)
@@ -347,8 +349,8 @@ class loggedinWindow(object):
         ################################################################################################################################################################################
     # Pack the frames and spinboxes in the main window
         self.scrollbar.pack(side="right", fill="both")
-        self.scrollbarh.pack(side="bottom", fill="both")
-        self.container.pack(side = "bottom", fill = "both")
+        self.scrollbarh.pack(side="top", fill="both")
+        self.container.pack(side="top", fill="both")
         self.canvas.pack(side="right", fill="both", expand=True)
 
 ####################### Nikha
@@ -435,14 +437,18 @@ class loggedinWindow(object):
     def saveData(self):
         # Specify the name to search for and the data to append
         name_to_find = self.username
-        data_to_append = [self.pacing_ints[self.pacing_modes.get()], self.LHR_spinbox.get(), self.UHR_spinbox.get(),
+        data_to_append = [self.username, self.password, self.pacing_ints[self.pacing_modes.get()], self.LHR_spinbox.get(), self.UHR_spinbox.get(),
                           self.MSR_spinbox.get(), self.Artial_Pulse_Amp_spinbox.get(), self.Artial_Pulse_Width_spinbox.get(),
                           self.Artial_Refractory_Period_spinbox.get(), self.Ventricular_Pulse_Amp_spinbox.get(),
                           self.Ventricular_Pulse_Width_spinbox.get(), self.Ventricular_Refractory_Period_spinbox.get()]
         filename = './saves/'+self.username+'.txt'
 
+        encrypted = [str(x)+"," for x in data_to_append]
+        encrypted = ''.join(encrypted)
+        encrypted = self.fernet.encrypt(encrypted.encode())
         # Read the existing data and modify it
         rows = []
+        '''
         with open(filename, mode='r', newline='') as file:
             reader = csv.reader(file)
             for row in reader:
@@ -451,11 +457,10 @@ class loggedinWindow(object):
                 elif len(row) >= 3 and row[0] == name_to_find:
                     row[2:] = data_to_append  # Replace columns 3 onward with new data
                 rows.append(row)
-
+        '''
         # Write the updated data back to the CSV file
-        with open(filename, mode='w', newline='') as file:
-            writer = csv.writer(file)
-            writer.writerows(rows)
+        with open(filename, mode='wb') as file:
+            file.write(encrypted)
 
     # Function to generate a report of the user's data'
     def generateReport(self):
