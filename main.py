@@ -7,7 +7,13 @@ from PIL import Image, ImageTk
 from windows.about import aboutWindow
 from windows.loggedin import loggedinWindow
 from windows.register import registerWindow
+from cryptography.fernet import Fernet
 
+
+with open("key.txt", mode='r', newline='') as file:
+    key = file.readline()
+print(key)
+fernet = Fernet(key)
 
 #Main window used for logging in and registering new users
 class mainWindow(object):
@@ -39,7 +45,7 @@ class mainWindow(object):
 
     #Function to open the registration window
     def createNew(self):
-        self.resgister = registerWindow(self.master)
+        self.resgister = registerWindow(self.master, key)
         self.master.wait_window(self.resgister.top)
 
     #Function to open the about window
@@ -56,15 +62,18 @@ class mainWindow(object):
 
         #Checks if the user exists in the users.txt file
         with open('./saves/'+user+'.txt', 'r') as f:
+            red = fernet.decrypt(f.readline()).decode()
+            red = red.split(',')
             reader = csv.reader(f)
-            for row in reader:
-                username = row[0]
-                password = row[1]
+
+            username = red[0].strip()
+            password = red[1].strip()
+            #print(username,user, password, passw)
 
                 #Returns new window for parameter modification if user password combo is found
-                if username == user and password == passw:
-                    print('yay')
-                    self.n = loggedinWindow(self.master, user, passw)
+            if username == user and password == passw:
+                    #print('yay')
+                    self.n = loggedinWindow(self.master, user, passw, key)
                     self.master.wait_window(self.n.top)
                     check = 1
 
