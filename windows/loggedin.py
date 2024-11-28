@@ -5,6 +5,7 @@ import sys
 import csv
 import serial
 import struct
+import time
 
 #### Nikha
 from windows.egram import ElectrogramData
@@ -351,47 +352,114 @@ class loggedinWindow(object):
         self.container.pack(side = "bottom", fill = "both")
         self.canvas.pack(side="right", fill="both", expand=True)
 
-####################### Nikha
+
+        # Set the response type to default 1, which is set parameters
+        #self.response_type = 1
+
+        # Set the echo_params to default 1 (echo_params), 2 is set_params
+        #self.echo_params = 1
+
+        self.window_closed = True
+
+        # Data storage for both subplots
+        self.x_data = []
+        self.ax1_ydata = []
+        self.ax2_ydata = []
+
+####################### Nikha and Talha
 
     def generateElectrogram(self):
-        # Example data values
-        egram_data = ElectrogramData(
-            AS=1, AP=1, AT=1, TN=1, VS=1, VP=1, PVC=1, Hy=1, Sr=1,
-            UpSmoothing=1, DownSmoothing=1, ATRDur=1, ATRFB=1, ATREnd=1, PVP=1
-        )
+        ser = serial.Serial('COM7', 115200)
+        self.window_closed = False
 
         egram_window = Toplevel(self.top)
         egram_window.title("Electrogram")
         egram_window.geometry("800x600")
+        egram_window.protocol("WM_DELETE_WINDOW", lambda: self.on_close(egram_window, ser))
 
         plot_frame = ttk.Frame(egram_window)
         plot_frame.pack(side="top", fill="both", expand=True)
 
-        fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 12))  
 
+        fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 12))
         plt.subplots_adjust(hspace=0.5)
 
-        ax1.plot(range(100), range(100)) 
-        ax1.set_title("Electrogram 1")
-        ax1.set_xlabel("Time")
-        ax1.set_ylabel("Amplitude")
+        line1, = ax1.plot([], [], 'b-')
+        ax1.set_title("VENT_SIGNAL")
+        ax1.set_xlabel("Time (S)")
+        ax1.set_ylabel("Amplitude (V)")
+        ax1.set_xlim(0, 50)
+        ax1.set_ylim(0, 100)
 
-        ax2.plot(range(100), [x**2 for x in range(100)]) 
-        ax2.set_title("Electrogram 2")
-        ax2.set_xlabel("Time")
-        ax2.set_ylabel("Amplitude")
+        line2, = ax2.plot([], [], 'r-')
+        ax2.set_title("ATR_SIGNAL")
+        ax2.set_xlabel("Time (S)")
+        ax2.set_ylabel("Amplitude (V)")
+        ax2.set_xlim(0, 50)
+        ax2.set_ylim(0, 100)
 
-        plot_canvas = FigureCanvasTkAgg(fig, plot_frame)
+        plot_canvas = FigureCanvasTkAgg(fig, master=plot_frame)
         plot_canvas.draw()
+        plot_canvas.get_tk_widget().pack(fill="both", expand=True)
 
-        plot_canvas.get_tk_widget().pack(fill="both", expand=True)   
+        # Use `after` to schedule updates
+        def update_egram():
+            if not self.window_closed:
 
+                data_to_send = [1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+                format_string = '>BBBBHHffHHBBBHHBBBBBBB'
+                byte_data = struct.pack(format_string, *data_to_send)
+                ser.write(byte_data)
+                print(f"Wrote Data: {byte_data}")
+                egram_data = ser.read(80)
+                print(f"Received Data: {egram_data}")
+                egram_list = list(struct.unpack('>ffffffffffffffffffff', egram_data))
+                print(egram_list)
 
-#################### Nikha
+                new_x_data = [len(self.x_data) + i for i in range(10)]
+                new_ax1_ydata = egram_list[:10]
+                new_ax2_ydata = egram_list[10:]
+
+                print(new_x_data)
+                print(new_ax1_ydata)
+                print(new_ax2_ydata)
+
+                self.x_data.extend(new_x_data)
+
+                self.ax1_ydata.extend(egram_list[:10])
+                self.ax2_ydata.extend(egram_list[10:])
+
+                # Keep only the last 10 points (sliding window)
+                x_data = self.x_data[-10:]
+                ax1_ydata = self.ax1_ydata[-10:]
+                ax2_ydata= self.ax2_ydata[-10:]
+
+                # Update the line data for both plots (only the last 10 data points)
+                line1.set_data(self.x_data, self.ax1_ydata)
+                line2.set_data(self.x_data, self.ax2_ydata)
+
+                # Adjust the x-axis to show the last 10 points (moving window)
+                ax1.set_xlim(min(self.x_data), max(self.x_data))  # Update x-limits dynamically
+                ax2.set_xlim(min(self.x_data), max(self.x_data))  # Update x-limits dynamically
+
+                # Redraw the canvas
+                plot_canvas.draw()
+
+                egram_window.after(500, update_egram)  # Schedule the next update
+
+        update_egram()  # Start the periodic updates
+
+    def on_close(self, egram_window, ser):
+        print("Toplevel window closed")
+        self.window_closed = True
+        egram_window.destroy()
+        ser.close()
+
+#################### Nikha and Talha
     def send_to_pacemaker(self):
-        data_to_send = [1,  #
+        data_to_send = [1,  # must stay as one
                         1,  # 1= Set params, 2 = echo params
-                        0,  # Response type
+                        1,  # Response type = 1 for set params, 0 for egram
                         self.pacing_ints[self.pacing_modes.get()],
                         int(self.Artial_Refractory_Period_spinbox.get()),
                         int(self.Ventricular_Refractory_Period_spinbox.get()),
