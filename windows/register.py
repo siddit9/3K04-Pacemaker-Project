@@ -45,14 +45,14 @@ class registerWindow(object):
         #writes into users.txt
         with open("./saves/"+self.user_entry.get()+'.txt', 'wb') as f:
             user, passw = self.user_entry.get(), self.password_entry.get()
-            if len(user) > 0 and len(passw) > 0:
+                        if os.path.isfile("./saves/"+user+'.txt'):
+                t = messagebox.Message(self.top, message="Username Already Exists", type=messagebox.OK)
+                t.show()
+            elif len(user) < 0 and len(passw) < 0:
+                t = messagebox.Message(self.top, message="User/Password Invalid", type=messagebox.OK)
+                t.show()
+            else:
                 f.write(self.fernet.encrypt((user + ',' + passw).encode()))
                 t = messagebox.Message(message="User Created", type=messagebox.OK)
                 t.show()
                 self.top.destroy()
-            elif os.path.isfile("./saves/"+user+'.txt'):
-                t = messagebox.Message(self.top, message="Username Already Exists", type=messagebox.OK)
-                t.show()
-            else:
-                t = messagebox.Message(self.top, message="User/Password Invalid", type=messagebox.OK)
-                t.show()
