@@ -6,7 +6,8 @@ import csv
 import serial
 import struct
 import time
-
+from tkinter import messagebox
+import math
 from cryptography.fernet import Fernet
 
 #### Nikha
@@ -390,14 +391,14 @@ class loggedinWindow(object):
         ax1.set_title("VENT_SIGNAL")
         ax1.set_xlabel("Time (S)")
         ax1.set_ylabel("Amplitude (V)")
-        ax1.set_xlim(0, 10)
+        ax1.set_xlim(0, 100)
         ax1.set_ylim(-4, 4)
 
         line2, = ax2.plot([], [], 'r-')
         ax2.set_title("ATR_SIGNAL")
         ax2.set_xlabel("Time (S)")
         ax2.set_ylabel("Amplitude (V)")
-        ax2.set_xlim(0, 10)
+        ax2.set_xlim(0, 100)
         ax2.set_ylim(-4, 4)
 
         plot_canvas = FigureCanvasTkAgg(fig, master=plot_frame)
@@ -412,30 +413,60 @@ class loggedinWindow(object):
                 byte_data = struct.pack(format_string, *data_to_send)
                 ser.write(byte_data)
                 #print(f"Wrote Data: {byte_data}")
-                # egram_data = ser.read(80)
-                # #print(f"Received Data: {egram_data}")
-                # egram_list = list(struct.unpack('>ffffffffffffffffffff', egram_data))
-                egram_data = ser.read(8)
-                print(egram_data)
-                egram_list = list(struct.unpack('>ff', egram_data))
-                print(egram_list)
-                # new_x_data = [self.x_data[-1] + i + 1 for i in range(10)] if self.x_data else list(range(10))
-                # new_ax1_ydata = egram_list[:10]
-                # new_ax2_ydata = egram_list[10:]
+                egram_data = ser.read(80)
+                #print(f"Received Data: {egram_data}")
+                egram_list = list(struct.unpack('>ffffffffffffffffffff', egram_data))
+                # egram_data = ser.read(12)
+                # print(egram_data)
+                # egram_list = list(struct.unpack('>fd', egram_data))
 
-                new_x_data = [self.x_data[-1] + i + 1 for i in range(1)] if self.x_data else list(range(1))
-                new_ax1_ydata = [egram_list[0]]
-                new_ax2_ydata = [egram_list[1]]
+                print(egram_list)
+
+                # new_x_data = [self.x_data[-1] + i + 1 for i in range(10)] if self.x_data else list(range(10))
+
+                # Calculate new time data, incrementing by 0.2s (200 ms)
+                if self.x_data:
+                    new_x_data = [self.x_data[-1] + 0.03 * (i + 1) for i in range(10)]
+                else:
+                    new_x_data = [0.02 * i for i in range(10)]
+
+                new_ax1_ydata = egram_list[:10]
+                new_ax2_ydata = egram_list[10:]
+
+                # def scaled_list(list):
+                #     return [math.log10(abs(x)) for x in list]
+                #
+                # new_ax1_ydata = scaled_list(new_ax1_ydata)
+                # new_ax2_ydata = scaled_list(new_ax2_ydata)
+
+                def scaled_list(list):
+                    return [3.5*((x-1.17549435E-35)/(3.40282347E+35 - 1.17549435E-35)) for x in list]
+
+                new_ax1_ydata = scaled_list(new_ax1_ydata)
+                new_ax2_ydata = scaled_list(new_ax2_ydata)
+
+                # new_x_data = [self.x_data[-1] + i + 1 for i in range(1)] if self.x_data else list(range(1))
+                # new_ax1_ydata = [(egram_list[0]-1.17549e-38)/(3.402823e38 - 1.17549e-38)]
+                # new_ax2_ydata = [(egram_list[1]-1.17549e-38)/(3.402823e38 - 1.17549e-38)]
+
+                # def scaled_x(x_data):
+                #     return [x*1.2 for x in x_data]
+                #
+                # new_x_data = scaled_x(new_x_data)
 
                 # Append the new data
                 self.x_data.extend(new_x_data)
                 self.ax1_ydata.extend(new_ax1_ydata)
                 self.ax2_ydata.extend(new_ax2_ydata)
 
+
+
                 # Keep only the last 10 points (adjust as needed for smooth scrolling)
-                self.x_data = self.x_data[-10:]
-                self.ax1_ydata = self.ax1_ydata[-10:]
-                self.ax2_ydata = self.ax2_ydata[-10:]
+                self.x_data = self.x_data[-100:]
+                # self.x_data = scaled_x(self.x_data)
+
+                self.ax1_ydata = self.ax1_ydata[-100:]
+                self.ax2_ydata = self.ax2_ydata[-100:]
 
                 # Update the plot with the new data
                 line1.set_data(self.x_data, self.ax1_ydata)
@@ -449,7 +480,7 @@ class loggedinWindow(object):
                 plot_canvas.draw()
 
                 # Schedule the next update
-                egram_window.after(100, update_egram)
+                egram_window.after(210, update_egram)
 
         update_egram()  # Start the periodic updates
 
@@ -484,7 +515,6 @@ class loggedinWindow(object):
                         120,  # URL
                         120  # MAXIMUM SENSOR RATE
                         ]
-
         # Adjust the format to match your data structure -> H is uint16, B is uint8, f is single
         format_string = '>BBBBHHffHHBBBHHBBBBBBB'
 
@@ -501,8 +531,16 @@ class loggedinWindow(object):
         recieved_data = ser.read(32)
         print(f"Received Data: {recieved_data}")
         print(struct.unpack('>BBHHffHHBBBHHBBBBBBB', recieved_data))
+        recieved_data_list = list(struct.unpack('>BBHHffHHBBBHHBBBBBBB', recieved_data))
+
+        if(data_to_send[2:] != recieved_data_list):
+            ser.close()
+            t = messagebox.Message(self.top, message="Data Sent Was Unsuccessful", type=messagebox.OK)
+            t.show()
+
 
         ser.close()
+
 
     def saveData(self):
         # Specify the name to search for and the data to append
