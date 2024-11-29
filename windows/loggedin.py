@@ -105,21 +105,21 @@ class loggedinWindow(object):
         self.default_LHR = StringVar(top)
         self.default_LHR.set("60")
         self.LHR_inc = 0
-        self.LHR_spinbox = ttk.Spinbox(self.HR_frame, from_=30, to=175, textvariable=self.default_LHR, command = self.calc_LHR_inc, increment= self.LHR_inc)
+        self.LHR_spinbox = ttk.Spinbox(self.HR_frame, from_=30, to=175, textvariable=self.default_LHR, command = self.calc_LHR_inc, increment= self.LHR_inc, state="readonly")
         self.LHR_spinbox.grid(row=2, column=0, padx=5, pady=10, sticky="ew")
 
         self.UHR_label = ttk.Label(self.HR_frame, text="Upper Heart Rate(ppm)")
         self.UHR_label.grid(row=3, column=0, padx=5, pady=10, sticky="ew")
         self.default_UHR = StringVar(top)
         self.default_UHR.set("120")
-        self.UHR_spinbox = ttk.Spinbox(self.HR_frame, from_=50, to=175, textvariable=self.default_UHR, increment=5)
+        self.UHR_spinbox = ttk.Spinbox(self.HR_frame, from_=50, to=175, textvariable=self.default_UHR, increment=5, state="readonly")
         self.UHR_spinbox.grid(row=4, column=0, padx=5, pady=10, sticky="ew")
 
         self.MSR_label = ttk.Label(self.HR_frame, text="Maximum Sensor Rate(ppm)")
         self.MSR_label.grid(row=5, column=0, padx=5, pady=10, sticky="ew")
         self.default_MSR = StringVar(top)
         self.default_MSR.set("120")
-        self.MSR_spinbox = ttk.Spinbox(self.HR_frame, from_=50, to=175, textvariable=self.default_MSR, increment=5)
+        self.MSR_spinbox = ttk.Spinbox(self.HR_frame, from_=50, to=175, textvariable=self.default_MSR, increment=5, state="readonly")
         self.MSR_spinbox.grid(row=6, column=0, padx=5, pady=10, sticky="ew")
 
         self.Hysteresis_limit_label = ttk.Label(self.HR_frame, text="Hysteresis Rate Limit(ppm)")
@@ -128,7 +128,7 @@ class loggedinWindow(object):
         self.default_HL.set("60")
         self.HL_inc = 0
         self.HL_spinbox = ttk.Spinbox(self.HR_frame, from_=30, to=175, textvariable=self.default_HL,
-                                       command=self.calc_HL_inc, increment=self.HL_inc)
+                                       command=self.calc_HL_inc, increment=self.HL_inc, state="readonly")
         self.HL_spinbox.grid(row=8, column=0, padx=5, pady=10, sticky="ew")
 
 ####################################################################################################################################################
@@ -139,7 +139,7 @@ class loggedinWindow(object):
         self.MSR_label.grid(row=1, column=0, padx=5, pady=10, sticky="ew")
         self.default_MSR = StringVar(top)
         self.default_MSR.set("120")
-        self.MSR_spinbox = ttk.Spinbox(self.RAP_frame, from_=50, to=175, textvariable=self.default_MSR, increment=5)
+        self.MSR_spinbox = ttk.Spinbox(self.RAP_frame, from_=50, to=175, textvariable=self.default_MSR, increment=5, state="readonly")
         self.MSR_spinbox.grid(row=2, column=0, padx=5, pady=10, sticky="ew")
 
         self.Activitythreshold_label = ttk.Label(self.RAP_frame, text="Activity Threshold")
@@ -153,7 +153,7 @@ class loggedinWindow(object):
         self.Responsefactor_label.grid(row=5, column=0, padx=5, pady=10, sticky="ew")
         self.default_Responsefactor = StringVar(top)
         self.default_Responsefactor.set("8")
-        self.Responsefactor_spinbox = ttk.Spinbox(self.RAP_frame, from_=1, to=16, textvariable=self.default_Responsefactor, increment=1)
+        self.Responsefactor_spinbox = ttk.Spinbox(self.RAP_frame, from_=1, to=16, textvariable=self.default_Responsefactor, increment=1, state="readonly")
         self.Responsefactor_spinbox.grid(row=6, column=0, padx=5, pady=10, sticky="ew")
 
         self.Reactiontime_label = ttk.Label(self.RAP_frame, text="Reaction Time(sec)")
@@ -161,7 +161,7 @@ class loggedinWindow(object):
         self.default_Reactiontime = StringVar(top)
         self.default_Reactiontime.set("30")
         self.Reactiontime_spinbox = ttk.Spinbox(self.RAP_frame, from_=10, to=50,
-                                                  textvariable=self.default_Reactiontime, increment=10)
+                                                  textvariable=self.default_Reactiontime, increment=10, state="readonly")
         self.Reactiontime_spinbox.grid(row=8, column=0, padx=5, pady=10, sticky="ew")
 
         self.Recoverytime_label = ttk.Label(self.RAP_frame, text="Recovery Time(Min)")
@@ -169,7 +169,7 @@ class loggedinWindow(object):
         self.default_Recoverytime = StringVar(top)
         self.default_Recoverytime.set("5")
         self.Recoverytime_spinbox = ttk.Spinbox(self.RAP_frame, from_=2, to=16,
-                                                  textvariable=self.default_Recoverytime, increment=1)
+                                                  textvariable=self.default_Recoverytime, increment=1, state="readonly")
         self.Recoverytime_spinbox.grid(row=10, column=0, padx=5, pady=10, sticky="ew")
 
 #####################################################################################################################################################
@@ -182,7 +182,7 @@ class loggedinWindow(object):
         self.default_FixedAVdelay = StringVar(top)
         self.default_FixedAVdelay.set("150")
         self.FixedAVdelay_spinbox = ttk.Spinbox(self.AV_frame, from_=70, to=300, textvariable=self.default_FixedAVdelay,
-                                                   increment=10)
+                                                   increment=10, state="readonly")
         self.FixedAVdelay_spinbox.grid(row=1, column=0, padx=5, pady=10, sticky="ew")
 
         self.DynamicAVDelay_label = ttk.Label(self.AV_frame, text="Dynamic AV Delay")
@@ -198,7 +198,7 @@ class loggedinWindow(object):
         self.default_MinDynamicAVdelay.set("50")
         self.MinDynamicAVdelay_spinbox = ttk.Spinbox(self.AV_frame, from_=30, to=100,
                                                             textvariable=self.default_MinDynamicAVdelay,
-                                                            increment=10)
+                                                            increment=10, state="readonly")
         self.MinDynamicAVdelay_spinbox.grid(row=5, column=0, padx=5, pady=10, sticky="ew")
 
         self.SensedAVdelayOffset_label = ttk.Label(self.AV_frame, text="Sensed Dynamic AV Delay Offset(ms)")
@@ -207,7 +207,7 @@ class loggedinWindow(object):
         self.default_SensedAVdelayOffset.set("0")
         self.SensedAVdelayOffset_inc = 0
         self.SensedAVdelayOffset_spinbox = ttk.Spinbox(self.AV_frame, from_=-100, to=0, textvariable=self.default_SensedAVdelayOffset,
-                                                     increment=10)
+                                                     increment=10, state="readonly")
         self.SensedAVdelayOffset_spinbox.grid(row=7, column=0, padx=5, pady=10, sticky="ew")
 
         self.PVARP_label = ttk.Label(self.AV_frame, text="Post Ventricular Atrial Refactory Period(ms)")
@@ -217,7 +217,7 @@ class loggedinWindow(object):
         self.PVARP_inc = 10
         self.PVARP_spinbox = ttk.Spinbox(self.AV_frame, from_=-150, to=500,
                                                        textvariable=self.default_PVARP,
-                                                       increment=10)
+                                                       increment=10, state="readonly")
         self.PVARP_spinbox.grid(row=9, column=0, padx=5, pady=10, sticky="ew")
 
         self.PVARP_ext_label = ttk.Label(self.AV_frame, text="Post Ventricular Atrial Refactory Period Extended(ms)")
@@ -227,7 +227,7 @@ class loggedinWindow(object):
         self.PVARP_inc = 50
         self.PVARP_spinbox = ttk.Spinbox(self.AV_frame, from_=0, to=400,
                                          textvariable=self.default_PVARP_ext,
-                                         increment=10)
+                                         increment=10, state="readonly")
         self.PVARP_spinbox.grid(row=11, column=0, padx=5, pady=10, sticky="ew")
 ############################################################################################################################################################
         #Frame and spinboxes for altering atrial pacing parameters
@@ -240,7 +240,7 @@ class loggedinWindow(object):
         self.default_APA = StringVar(top)
         self.default_APA.set("3.5")
         self.APA_inc = 0
-        self.Artial_Pulse_Amp_spinbox = ttk.Spinbox(self.Artial_frame, from_=0, to=7, textvariable=self.default_APA, command = self.calc_APA_inc, increment=self.APA_inc)
+        self.Artial_Pulse_Amp_spinbox = ttk.Spinbox(self.Artial_frame, from_=0, to=7, textvariable=self.default_APA, command = self.calc_APA_inc, increment=self.APA_inc, state="readonly")
         self.Artial_Pulse_Amp_spinbox.grid(row=4, column=0, padx=5, pady=10, sticky="ew")
 
         self.Artial_Pulse_Amp_R_label = ttk.Label(self.Artial_frame, text="Artial Pulse Amplitude Regulated(V)")
@@ -249,7 +249,7 @@ class loggedinWindow(object):
         self.default_APAR.set("5")
         self.APAR_inc = 0.1
         self.Artial_Pulse_Amp_R_spinbox = ttk.Spinbox(self.Artial_frame, from_=0, to=5, textvariable=self.default_APAR,
-                                                    increment=self.APAR_inc, format="%.02f")
+                                                    increment=self.APAR_inc, format="%.02f", state="readonly")
         self.Artial_Pulse_Amp_R_spinbox.grid(row=6, column=0, padx=5, pady=10, sticky="ew")
 
         self.Artial_Pulse_Width_label = ttk.Label(self.Artial_frame, text="Artial Pulse Width(ms)")
@@ -258,7 +258,7 @@ class loggedinWindow(object):
         self.default_APW.set("1")
         self.APW_inc = 0
         self.Artial_Pulse_Width_spinbox = ttk.Spinbox(self.Artial_frame, from_=1, to=30, textvariable=self.default_APW,
-                                                     increment=1)
+                                                     increment=1, state="readonly")
         self.Artial_Pulse_Width_spinbox.grid(row=8, column=0, padx=5, pady=10, sticky="ew")
 
         self.Artial_Refractory_Period_label = ttk.Label(self.Artial_frame, text="Artial Refractory Period(ms)")
@@ -268,7 +268,7 @@ class loggedinWindow(object):
         self.ARP_inc = 10
         self.Artial_Refractory_Period_spinbox = ttk.Spinbox(self.Artial_frame, from_=150, to=500,
                                                       textvariable=self.default_ARP,
-                                                       increment=self.ARP_inc)
+                                                       increment=self.ARP_inc, state="readonly")
         self.Artial_Refractory_Period_spinbox.grid(row=10, column=0, padx=5, pady=10, sticky="ew")
 
         self.Atrial_Sensitivity_label = ttk.Label(self.Artial_frame,
@@ -279,7 +279,7 @@ class loggedinWindow(object):
         self.AS_inc = 0.1
         self.Atrial_Sensitivity_spinbox = ttk.Spinbox(self.Artial_frame, from_=0, to=0.5,
                                                            textvariable=self.default_AS,
-                                                           increment=self.AS_inc, format="%.02f")
+                                                           increment=self.AS_inc, format="%.02f", state="readonly")
         self.Atrial_Sensitivity_spinbox.grid(row=12, column=0, padx=5, pady=10, sticky="ew")
 ##########################################################################################################################################################
         #Frame and spinboxes for altering ventricular parameters
@@ -293,7 +293,7 @@ class loggedinWindow(object):
         self.default_VPA.set("3.5")
         self.VPA_inc = 0
         self.Ventricular_Pulse_Amp_spinbox = ttk.Spinbox(self.Ventricular_frame, from_=0, to=7, textvariable=self.default_VPA,
-                                                    command=self.calc_VPA_inc, increment=self.VPA_inc)
+                                                    command=self.calc_VPA_inc, increment=self.VPA_inc, state="readonly")
         self.Ventricular_Pulse_Amp_spinbox.grid(row=4, column=0, padx=5, pady=10, sticky="ew")
 
         self.Ventricular_Pulse_Amp_R_label = ttk.Label(self.Ventricular_frame, text="Ventricular Pulse Amplitude Regulated(V)")
@@ -302,7 +302,7 @@ class loggedinWindow(object):
         self.default_VPAR.set("5")
         self.VPAR_inc = 0.1
         self.Ventricular_Pulse_Amp_R_spinbox = ttk.Spinbox(self.Ventricular_frame, from_=0, to=5, textvariable=self.default_VPAR,
-                                                      increment=self.VPAR_inc, format="%.02f")
+                                                      increment=self.VPAR_inc, format="%.02f", state="readonly")
         self.Ventricular_Pulse_Amp_R_spinbox.grid(row=6, column=0, padx=5, pady=10, sticky="ew")
 
         self.Ventricular_Pulse_Width_label = ttk.Label(self.Ventricular_frame, text="Ventricular Pulse Width(ms)")
@@ -312,7 +312,7 @@ class loggedinWindow(object):
         self.VPW_inc = 0
         self.Ventricular_Pulse_Width_spinbox = ttk.Spinbox(self.Ventricular_frame, from_=1, to=30,
                                                       textvariable=self.default_VPW,
-                                                      increment=1)
+                                                      increment=1, state="readonly")
         self.Ventricular_Pulse_Width_spinbox.grid(row=8, column=0, padx=5, pady=10, sticky="ew")
 
         self.Ventricular_Refractory_Period_label = ttk.Label(self.Ventricular_frame, text="Ventricular Refractory Period(ms)")
@@ -322,7 +322,7 @@ class loggedinWindow(object):
         self.VRP_inc = 10
         self.Ventricular_Refractory_Period_spinbox = ttk.Spinbox(self.Ventricular_frame, from_=150, to=500,
                                        textvariable=self.default_VRP,
-                                       increment=self.VRP_inc)
+                                       increment=self.VRP_inc, state="readonly")
         self.Ventricular_Refractory_Period_spinbox.grid(row=10, column=0, padx=5, pady=10, sticky="ew")
 
         self.Ventricular_Blanking_label = ttk.Label(self.Ventricular_frame,
@@ -333,7 +333,7 @@ class loggedinWindow(object):
         self.VB_inc = 10
         self.Ventricular_Blanking_spinbox = ttk.Spinbox(self.Ventricular_frame, from_=30, to=60,
                                                                  textvariable=self.default_VB,
-                                                                 increment=self.VB_inc)
+                                                                 increment=self.VB_inc, state="readonly")
         self.Ventricular_Blanking_spinbox.grid(row=12, column=0, padx=5, pady=10, sticky="ew")
 
         self.Ventricular_Sensitivity_label = ttk.Label(self.Ventricular_frame,
@@ -344,7 +344,7 @@ class loggedinWindow(object):
         self.VS_inc = 0.1
         self.Ventricular_Sensitivity_spinbox = ttk.Spinbox(self.Ventricular_frame, from_=0, to=0.5,
                                                         textvariable=self.default_VS,
-                                                        increment=self.VS_inc, format = "%.02f")
+                                                        increment=self.VS_inc, format = "%.02f", state="readonly")
         self.Ventricular_Sensitivity_spinbox.grid(row=14, column=0, padx=5, pady=10, sticky="ew")
 
         ################################################################################################################################################################################
