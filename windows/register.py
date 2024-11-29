@@ -45,7 +45,7 @@ class registerWindow(object):
         #writes into users.txt
         with open("./saves/"+self.user_entry.get()+'.txt', 'wb') as f:
             user, passw = self.user_entry.get(), self.password_entry.get()
-                        if os.path.isfile("./saves/"+user+'.txt'):
+            if os.path.isfile("./saves/"+user+'.txt'):
                 t = messagebox.Message(self.top, message="Username Already Exists", type=messagebox.OK)
                 t.show()
             elif len(user) < 0 and len(passw) < 0:
