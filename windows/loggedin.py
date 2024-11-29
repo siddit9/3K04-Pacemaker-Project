@@ -390,15 +390,15 @@ class loggedinWindow(object):
         ax1.set_title("VENT_SIGNAL")
         ax1.set_xlabel("Time (S)")
         ax1.set_ylabel("Amplitude (V)")
-        ax1.set_xlim(0, 50)
-        ax1.set_ylim(0, 100)
+        ax1.set_xlim(0, 10)
+        ax1.set_ylim(-4, 4)
 
         line2, = ax2.plot([], [], 'r-')
         ax2.set_title("ATR_SIGNAL")
         ax2.set_xlabel("Time (S)")
         ax2.set_ylabel("Amplitude (V)")
-        ax2.set_xlim(0, 50)
-        ax2.set_ylim(0, 100)
+        ax2.set_xlim(0, 10)
+        ax2.set_ylim(-4, 4)
 
         plot_canvas = FigureCanvasTkAgg(fig, master=plot_frame)
         plot_canvas.draw()
@@ -407,47 +407,49 @@ class loggedinWindow(object):
         # Use `after` to schedule updates
         def update_egram():
             if not self.window_closed:
-
                 data_to_send = [1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
                 format_string = '>BBBBHHffHHBBBHHBBBBBBB'
                 byte_data = struct.pack(format_string, *data_to_send)
                 ser.write(byte_data)
-                print(f"Wrote Data: {byte_data}")
-                egram_data = ser.read(80)
-                print(f"Received Data: {egram_data}")
-                egram_list = list(struct.unpack('>ffffffffffffffffffff', egram_data))
+                #print(f"Wrote Data: {byte_data}")
+                # egram_data = ser.read(80)
+                # #print(f"Received Data: {egram_data}")
+                # egram_list = list(struct.unpack('>ffffffffffffffffffff', egram_data))
+                egram_data = ser.read(8)
+                print(egram_data)
+                egram_list = list(struct.unpack('>ff', egram_data))
                 print(egram_list)
+                # new_x_data = [self.x_data[-1] + i + 1 for i in range(10)] if self.x_data else list(range(10))
+                # new_ax1_ydata = egram_list[:10]
+                # new_ax2_ydata = egram_list[10:]
 
-                new_x_data = [len(self.x_data) + i for i in range(10)]
-                new_ax1_ydata = egram_list[:10]
-                new_ax2_ydata = egram_list[10:]
+                new_x_data = [self.x_data[-1] + i + 1 for i in range(1)] if self.x_data else list(range(1))
+                new_ax1_ydata = [egram_list[0]]
+                new_ax2_ydata = [egram_list[1]]
 
-                print(new_x_data)
-                print(new_ax1_ydata)
-                print(new_ax2_ydata)
-
+                # Append the new data
                 self.x_data.extend(new_x_data)
+                self.ax1_ydata.extend(new_ax1_ydata)
+                self.ax2_ydata.extend(new_ax2_ydata)
 
-                self.ax1_ydata.extend(egram_list[:10])
-                self.ax2_ydata.extend(egram_list[10:])
+                # Keep only the last 10 points (adjust as needed for smooth scrolling)
+                self.x_data = self.x_data[-10:]
+                self.ax1_ydata = self.ax1_ydata[-10:]
+                self.ax2_ydata = self.ax2_ydata[-10:]
 
-                # Keep only the last 10 points (sliding window)
-                x_data = self.x_data[-10:]
-                ax1_ydata = self.ax1_ydata[-10:]
-                ax2_ydata= self.ax2_ydata[-10:]
-
-                # Update the line data for both plots (only the last 10 data points)
+                # Update the plot with the new data
                 line1.set_data(self.x_data, self.ax1_ydata)
                 line2.set_data(self.x_data, self.ax2_ydata)
 
-                # Adjust the x-axis to show the last 10 points (moving window)
-                ax1.set_xlim(min(self.x_data), max(self.x_data))  # Update x-limits dynamically
-                ax2.set_xlim(min(self.x_data), max(self.x_data))  # Update x-limits dynamically
+                # Update x-axis limits to show the last 50 points
+                ax1.set_xlim(self.x_data[0], self.x_data[-1])
+                ax2.set_xlim(self.x_data[0], self.x_data[-1])
 
                 # Redraw the canvas
                 plot_canvas.draw()
 
-                egram_window.after(500, update_egram)  # Schedule the next update
+                # Schedule the next update
+                egram_window.after(100, update_egram)
 
         update_egram()  # Start the periodic updates
 
