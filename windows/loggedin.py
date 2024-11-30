@@ -356,12 +356,6 @@ class loggedinWindow(object):
         self.canvas.pack(side="right", fill="both", expand=True)
 
 
-        # Set the response type to default 1, which is set parameters
-        #self.response_type = 1
-
-        # Set the echo_params to default 1 (echo_params), 2 is set_params
-        #self.echo_params = 1
-
         self.window_closed = True
 
         # Data storage for both subplots
@@ -412,17 +406,10 @@ class loggedinWindow(object):
                 format_string = '>BBBBHHffHHBBBHHBBBBBBB'
                 byte_data = struct.pack(format_string, *data_to_send)
                 ser.write(byte_data)
-                #print(f"Wrote Data: {byte_data}")
                 egram_data = ser.read(80)
-                #print(f"Received Data: {egram_data}")
                 egram_list = list(struct.unpack('>ffffffffffffffffffff', egram_data))
-                # egram_data = ser.read(12)
-                # print(egram_data)
-                # egram_list = list(struct.unpack('>fd', egram_data))
 
                 print(egram_list)
-
-                # new_x_data = [self.x_data[-1] + i + 1 for i in range(10)] if self.x_data else list(range(10))
 
                 # Calculate new time data, incrementing by 0.2s (200 ms)
                 if self.x_data:
@@ -432,53 +419,31 @@ class loggedinWindow(object):
 
                 new_ax1_ydata = egram_list[:10]
                 new_ax2_ydata = egram_list[10:]
-
-                # def scaled_list(list):
-                #     return [math.log10(abs(x)) for x in list]
-                #
-                # new_ax1_ydata = scaled_list(new_ax1_ydata)
-                # new_ax2_ydata = scaled_list(new_ax2_ydata)
-
                 def scaled_list(list):
                     return [3.5*((x-1.17549435E-35)/(3.40282347E+35 - 1.17549435E-35)) for x in list]
 
                 new_ax1_ydata = scaled_list(new_ax1_ydata)
                 new_ax2_ydata = scaled_list(new_ax2_ydata)
 
-                # new_x_data = [self.x_data[-1] + i + 1 for i in range(1)] if self.x_data else list(range(1))
-                # new_ax1_ydata = [(egram_list[0]-1.17549e-38)/(3.402823e38 - 1.17549e-38)]
-                # new_ax2_ydata = [(egram_list[1]-1.17549e-38)/(3.402823e38 - 1.17549e-38)]
-
-                # def scaled_x(x_data):
-                #     return [x*1.2 for x in x_data]
-                #
-                # new_x_data = scaled_x(new_x_data)
-
                 # Append the new data
                 self.x_data.extend(new_x_data)
                 self.ax1_ydata.extend(new_ax1_ydata)
                 self.ax2_ydata.extend(new_ax2_ydata)
 
-
-
                 # Keep only the last 10 points (adjust as needed for smooth scrolling)
                 self.x_data = self.x_data[-100:]
                 # self.x_data = scaled_x(self.x_data)
-
                 self.ax1_ydata = self.ax1_ydata[-100:]
                 self.ax2_ydata = self.ax2_ydata[-100:]
 
                 # Update the plot with the new data
                 line1.set_data(self.x_data, self.ax1_ydata)
                 line2.set_data(self.x_data, self.ax2_ydata)
-
                 # Update x-axis limits to show the last 50 points
                 ax1.set_xlim(self.x_data[0], self.x_data[-1])
                 ax2.set_xlim(self.x_data[0], self.x_data[-1])
-
                 # Redraw the canvas
                 plot_canvas.draw()
-
                 # Schedule the next update
                 egram_window.after(210, update_egram)
 
@@ -495,7 +460,7 @@ class loggedinWindow(object):
         data_to_send = [1,  # must stay as one
                         1,  # 1= Set params, 2 = echo params
                         1,  # Response type = 1 for set params, 0 for egram
-                        self.pacing_ints[self.pacing_modes.get()],
+                        int(self.pacing_ints[self.pacing_modes.get()]),
                         int(self.Artial_Refractory_Period_spinbox.get()),
                         int(self.Ventricular_Refractory_Period_spinbox.get()),
                         float(self.Artial_Pulse_Amp_spinbox.get()),

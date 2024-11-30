@@ -1,5 +1,0 @@
-Drizzy,Drippy
-dd,bb
-ep,pe
-p,p,1,60,120,120,3.5,0.4,250,3.5,0.4,320
-ball,sac
